@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigiSchool - School Administration Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style type="text/tailwindcss">
+    @theme {
+      --color-navy: #0f1b2d;
+      --color-navy-light: #162240;
+      --color-navy-hover: #1c2d4a;
+      --color-teal: #0d9488;
+      --color-teal-dark: #0f766e;
+      --color-emerald: #10b981;
+      --color-emerald-dark: #059669;
+      --color-sky: #38bdf8;
+      --color-royal: #6366f1;
+      --color-amber-badge: #f59e0b;
+      --color-rose: #f43f5e;
+      --font-sans: 'Inter', system-ui, sans-serif;
+    }
+  </style>
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .donut-chart {
+      position: relative;
+      width: 70px;
+      height: 70px;
+    }
+    .donut-chart svg { transform: rotate(-90deg); }
+    .donut-chart .label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .donut-lg {
+      width: 90px;
+      height: 90px;
+    }
+    .donut-lg .label { font-size: 14px; }
+
+    .score-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .perf-badge {
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .sidebar-item:hover { background: #1c2d4a; color: #e2e8f0; }
+    .sidebar-item.active { background: linear-gradient(135deg, #0d9488, #10b981); color: white; }
+
+    .mini-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 6px;
+      border-radius: 6px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mini-nav-item:hover { background: #f1f5f9; color: #334155; }
+    .mini-nav-item.active { background: linear-gradient(135deg, #0d9488, #10b981); color: white; }
+
+    table td, table th { white-space: nowrap; }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid #f1f5f9;
+    }
+
+    .table-row:hover { background: #f8fafc; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in { animation: fadeIn 0.4s ease-out; }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex">
+
+  <!-- Mobile Sidebar Overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-60 bg-navy flex flex-col z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-white/10">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-teal to-emerald flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      </div>
+      <span class="text-white font-bold text-lg tracking-tight">DigiSchool</span>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <div class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+        Dashboard
+      </div>
+      <div class="sidebar-item active">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+        Students
+      </div>
+      <div class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Teachers
+      </div>
+      <div class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        Classes
+      </div>
+      <div class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Reports
+      </div>
+      <div class="sidebar-item">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Settings
+      </div>
+    </nav>
+
+    <div class="px-4 py-4 border-t border-white/10">
+      <div class="flex items-center gap-3 px-2">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky to-royal flex items-center justify-center text-white text-xs font-bold">AD</div>
+        <div>
+          <p class="text-white text-sm font-medium leading-tight">Admin User</p>
+          <p class="text-slate-400 text-xs">admin@digischool.com</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-h-screen min-w-0">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/60">
+      <div class="flex items-center justify-between px-4 lg:px-6 py-3">
+        <div class="flex items-center gap-3">
+          <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-600" onclick="toggleSidebar()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="flex items-center gap-2">
+            <span class="text-teal font-extrabold text-xl tracking-tight hidden sm:inline">DigiSchool</span>
+            <span class="text-slate-700 font-semibold text-base hidden sm:inline">School Administration Portal</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1 right-1 w-4 h-4 bg-rose text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+          <button class="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </button>
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-badge to-orange-500 flex items-center justify-center text-white text-sm font-bold cursor-pointer ring-2 ring-white shadow">
+            A
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="flex-1 p-4 lg:p-6 overflow-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-in">
+
+        <!-- ========== COLUMN 1: Student & Teacher Management ========== -->
+        <div class="min-w-0 space-y-4">
+
+          <!-- Student Profile Management -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-bold text-slate-800">Student Profile Management</h2>
+            </div>
+
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-semibold text-slate-700">Student Directory</h3>
+              <button class="px-4 py-1.5 bg-gradient-to-r from-emerald to-teal text-white text-xs font-semibold rounded-lg hover:shadow-lg hover:shadow-emerald/25 transition-all">Add Students</button>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-3">
+              <div class="flex-1 min-w-[140px]">
+                <input type="text" placeholder="Search Student Name/ID" class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal bg-slate-50">
+              </div>
+              <select class="px-2 py-1.5 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal/30">
+                <option>Grade</option><option>A</option><option>B</option><option>C</option><option>D</option><option>G</option>
+              </select>
+              <select class="px-2 py-1.5 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal/30">
+                <option>Section</option><option>A1</option><option>A2</option><option>A3</option><option>A4</option>
+              </select>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="border-b border-slate-100">
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Student ID</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Name</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Grade</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Section</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Contact</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S100301</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-[9px] font-bold">JN</div><span class="text-slate-700 font-medium">John Name</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">A</td>
+                    <td class="py-2 px-1 text-slate-600">A1</td>
+                    <td class="py-2 px-1 text-slate-600">009-435-0195</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S100302</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-rose flex items-center justify-center text-white text-[9px] font-bold">RK</div><span class="text-slate-700 font-medium">Ratik Kanin</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">G</td>
+                    <td class="py-2 px-1 text-slate-600">A2</td>
+                    <td class="py-2 px-1 text-slate-600">009-435-0732</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S100303</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[9px] font-bold">DR</div><span class="text-slate-700 font-medium">Dalone Rira</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">G</td>
+                    <td class="py-2 px-1 text-slate-600">A4</td>
+                    <td class="py-2 px-1 text-slate-600">009-435-0709</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S100304</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald to-teal flex items-center justify-center text-white text-[9px] font-bold">ZK</div><span class="text-slate-700 font-medium">Zama Kanan</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">G</td>
+                    <td class="py-2 px-1 text-slate-600">A3</td>
+                    <td class="py-2 px-1 text-slate-600">009-435-0789</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S100305</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white text-[9px] font-bold">JW</div><span class="text-slate-700 font-medium">Join Wario</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">D</td>
+                    <td class="py-2 px-1 text-slate-600">A4</td>
+                    <td class="py-2 px-1 text-slate-600">009-435-4766</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex items-center justify-center gap-1 mt-3">
+              <button class="w-7 h-7 rounded-md text-xs text-slate-400 hover:bg-slate-100 flex items-center justify-center">&lt;</button>
+              <button class="w-7 h-7 rounded-md text-xs bg-teal text-white font-bold flex items-center justify-center">1</button>
+              <button class="w-7 h-7 rounded-md text-xs text-slate-500 hover:bg-slate-100 flex items-center justify-center">2</button>
+              <button class="w-7 h-7 rounded-md text-xs text-slate-400 hover:bg-slate-100 flex items-center justify-center">&gt;</button>
+            </div>
+          </div>
+
+          <!-- Section Label -->
+          <div class="flex items-center gap-2">
+            <div class="w-1 h-5 bg-gradient-to-b from-teal to-emerald rounded-full"></div>
+            <h2 class="text-sm font-bold text-slate-700">1. Student Profile Management</h2>
+          </div>
+
+          <!-- Teacher Directory -->
+          <div class="card p-4">
+            <h3 class="text-xs font-bold text-slate-800 mb-2">Teacher Directory</h3>
+
+            <div class="flex flex-wrap gap-2 mb-3">
+              <div class="flex-1 min-w-[120px]">
+                <input type="text" placeholder="Search" class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal bg-slate-50">
+              </div>
+              <select class="px-2 py-1.5 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal/30"><option>Grade</option></select>
+              <select class="px-2 py-1.5 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal/30"><option>Section</option></select>
+              <button class="px-3 py-1.5 bg-gradient-to-r from-teal to-emerald text-white text-xs font-semibold rounded-lg hover:shadow-lg hover:shadow-teal/25 transition-all">View Active</button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="border-b border-slate-100">
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Teacher ID</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Name</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Department</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Subject</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Contact</th>
+                    <th class="text-left py-2 px-1 text-slate-500 font-semibold">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10901</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-[9px] font-bold">JR</div><span class="text-slate-700 font-medium">John Ramik</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">Department</td>
+                    <td class="py-2 px-1 text-slate-600">History</td>
+                    <td class="py-2 px-1 text-slate-600">038-456-630</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10902</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-rose to-pink-500 flex items-center justify-center text-white text-[9px] font-bold">JR</div><span class="text-slate-700 font-medium">John Ramin</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">Department</td>
+                    <td class="py-2 px-1 text-slate-600">Department</td>
+                    <td class="py-2 px-1 text-slate-600">038-456-630</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10903</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-white text-[9px] font-bold">AK</div><span class="text-slate-700 font-medium">Aalan Kloen</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">English</td>
+                    <td class="py-2 px-1 text-slate-600">Math</td>
+                    <td class="py-2 px-1 text-slate-600">038-456-300</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10904</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald to-green-500 flex items-center justify-center text-white text-[9px] font-bold">DR</div><span class="text-slate-700 font-medium">Davana Roman</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">History</td>
+                    <td class="py-2 px-1 text-slate-600">Class</td>
+                    <td class="py-2 px-1 text-slate-600">038-450-530</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10905</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center text-white text-[9px] font-bold">JS</div><span class="text-slate-700 font-medium">Just Smith</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">History</td>
+                    <td class="py-2 px-1 text-slate-600">History</td>
+                    <td class="py-2 px-1 text-slate-600">039-550-530</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                  <tr class="table-row border-b border-slate-50 transition">
+                    <td class="py-2 px-1 text-slate-600">S10906</td>
+                    <td class="py-2 px-1"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-gradient-to-br from-teal to-cyan-500 flex items-center justify-center text-white text-[9px] font-bold">KS</div><span class="text-slate-700 font-medium">Kelty Sanen</span></div></td>
+                    <td class="py-2 px-1 text-slate-600">English</td>
+                    <td class="py-2 px-1 text-slate-600">Department</td>
+                    <td class="py-2 px-1 text-slate-600">039-330-195</td>
+                    <td class="py-2 px-1"><a href="#" class="text-teal hover:text-teal-dark font-semibold hover:underline">View/Edit</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== COLUMN 2: Student Performance Progress ========== -->
+        <div class="min-w-0 space-y-4">
+          <div class="card overflow-hidden">
+            <div class="flex">
+              <!-- Mini Sidebar (icon-only) -->
+              <div class="hidden lg:flex flex-col w-11 bg-slate-50 border-r border-slate-100 py-4 px-1.5 space-y-1 shrink-0 items-center">
+                <div class="mini-nav-item" title="Dashboard">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/></svg>
+                </div>
+                <div class="mini-nav-item active" title="Students">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Teachers">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Classes">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Reports">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Settings">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37"/></svg>
+                </div>
+              </div>
+
+              <!-- Chart Area -->
+              <div class="flex-1 min-w-0 p-4">
+                <h2 class="text-sm font-bold text-slate-800 mb-1">Student Performance Progress</h2>
+                <div class="flex flex-wrap items-center justify-between gap-1 mb-3">
+                  <p class="text-[11px] text-slate-500 font-medium">Average Student Performance</p>
+                  <div class="flex items-center gap-2 text-[10px]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-sky"></span>Avg Grade</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-sm bg-emerald"></span>Performance %</span>
+                  </div>
+                </div>
+                <div class="h-48">
+                  <canvas id="performanceChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Performing & Needing Attention -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Top Performing -->
+            <div class="card p-3">
+              <h3 class="text-xs font-bold text-slate-800 mb-2">Top Performing Students</h3>
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-[9px] font-bold shrink-0">JN</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Jamin Name</p><p class="text-[9px] text-slate-400">Average Grade</p></div>
+                  </div>
+                  <div class="score-circle bg-gradient-to-br from-sky to-blue-500">64</div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-rose flex items-center justify-center text-white text-[9px] font-bold shrink-0">GR</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Golol Riras</p><p class="text-[9px] text-slate-400">Average Grade</p></div>
+                  </div>
+                  <div class="score-circle bg-gradient-to-br from-emerald to-teal">63</div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[9px] font-bold shrink-0">SN</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Same Name</p><p class="text-[9px] text-slate-400">Grade</p></div>
+                  </div>
+                  <div class="score-circle bg-gradient-to-br from-violet-400 to-purple-500">63</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Needing Attention -->
+            <div class="card p-3">
+              <h3 class="text-xs font-bold text-slate-800 mb-2">Students Needing Attention</h3>
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center text-white text-[9px] font-bold shrink-0">JN</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Jatim Name</p><p class="text-[9px] text-slate-400">Average Grade</p></div>
+                  </div>
+                  <div class="w-8 h-8 rounded-full bg-rose/10 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center text-white text-[9px] font-bold shrink-0">GR</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Golor Ratira</p><p class="text-[9px] text-slate-400">Grade</p></div>
+                  </div>
+                  <div class="w-7 h-7 rounded-full bg-rose/10 flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5 text-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center text-white text-[9px] font-bold shrink-0">SD</div>
+                    <div><p class="text-[11px] font-semibold text-slate-700">Same Doner</p><p class="text-[9px] text-slate-400">Grade</p></div>
+                  </div>
+                  <div class="w-7 h-7 rounded-full bg-rose/10 flex items-center justify-center shrink-0">
+                    <svg class="w-3.5 h-3.5 text-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== COLUMN 3: Teacher & Class Performance ========== -->
+        <div class="min-w-0 space-y-4">
+          <div class="card overflow-hidden">
+            <div class="flex">
+              <!-- Mini Sidebar (icon-only) -->
+              <div class="hidden lg:flex flex-col w-11 bg-slate-50 border-r border-slate-100 py-4 px-1.5 space-y-1 shrink-0 items-center">
+                <div class="mini-nav-item" title="Dashboard">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/></svg>
+                </div>
+                <div class="mini-nav-item active" title="Students">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1z"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Teachers">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Classes">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2"/></svg>
+                </div>
+                <div class="mini-nav-item" title="Reports">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/></svg>
+                </div>
+              </div>
+
+              <!-- Teacher Performance Content -->
+              <div class="flex-1 min-w-0 p-4">
+                <h2 class="text-sm font-bold text-slate-800 mb-3">Teacher & Class Performance</h2>
+
+                <h3 class="text-xs font-semibold text-slate-700 mb-2">Teachers at a Glance</h3>
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0">JN</div>
+                      <span class="text-[11px] font-medium text-slate-700 truncate">Jalion Name</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <span class="text-[9px] text-slate-400 hidden xl:inline">Class Perf.</span>
+                      <span class="perf-badge bg-emerald/15 text-emerald-dark">High</span>
+                      <a href="#" class="text-[9px] text-teal hover:underline font-medium">View Details</a>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-rose flex items-center justify-center text-white text-[8px] font-bold shrink-0">MH</div>
+                      <span class="text-[11px] font-medium text-slate-700 truncate">Martia Hantianan</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <span class="text-[9px] text-slate-400 hidden xl:inline">Class Perf.</span>
+                      <span class="perf-badge bg-emerald/15 text-emerald-dark">High</span>
+                      <a href="#" class="text-[9px] text-teal hover:underline font-medium">View Details</a>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0">AK</div>
+                      <span class="text-[11px] font-medium text-slate-700 truncate">Allas Kallom</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <span class="perf-badge bg-emerald/15 text-emerald-dark">
+                        <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                      </span>
+                      <a href="#" class="text-[9px] text-teal hover:underline font-medium">View Details</a>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald to-teal flex items-center justify-center text-white text-[8px] font-bold shrink-0">JK</div>
+                      <span class="text-[11px] font-medium text-slate-700 truncate">Juoos Kallom</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <span class="text-[9px] text-slate-400 hidden xl:inline">Class Perf.</span>
+                      <span class="perf-badge bg-amber-badge/15 text-amber-700">Mod</span>
+                      <a href="#" class="text-[9px] text-teal hover:underline font-medium">View Details</a>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0">JS</div>
+                      <span class="text-[11px] font-medium text-slate-700 truncate">Jation Smith</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <span class="text-[9px] text-slate-400 hidden xl:inline">Class Perf.</span>
+                      <span class="perf-badge bg-amber-badge/15 text-amber-700">Mod</span>
+                      <a href="#" class="text-[9px] text-teal hover:underline font-medium">View Details</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Label -->
+          <div class="flex items-center gap-2">
+            <div class="w-1 h-5 bg-gradient-to-b from-royal to-violet-500 rounded-full"></div>
+            <h2 class="text-sm font-bold text-slate-700">4. Teacher Performance Management (according to assigned students)</h2>
+          </div>
+
+          <!-- Class Progress Metrics -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-slate-800">Class Progress Metrics</h3>
+              <button class="px-3 py-1.5 bg-gradient-to-r from-royal to-violet-500 text-white text-xs font-semibold rounded-lg hover:shadow-lg hover:shadow-royal/25 transition-all">Add Admins</button>
+            </div>
+
+            <!-- Donut Charts Row -->
+            <div class="flex items-center justify-around mb-5">
+              <div class="text-center">
+                <div class="donut-chart mx-auto mb-2">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" stroke-width="3"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad1)" stroke-width="3" stroke-dasharray="95 5" stroke-linecap="round"/>
+                    <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#0d9488"/><stop offset="100%" style="stop-color:#10b981"/></linearGradient></defs>
+                  </svg>
+                  <div class="label text-teal font-bold">95%</div>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">Class 6A</p>
+                <p class="text-[10px] text-slate-400">(Avg 95%)</p>
+              </div>
+              <div class="text-center">
+                <div class="donut-chart mx-auto mb-2">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" stroke-width="3"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad2)" stroke-width="3" stroke-dasharray="98 2" stroke-linecap="round"/>
+                    <defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#8b5cf6"/></linearGradient></defs>
+                  </svg>
+                  <div class="label text-royal font-bold">98%</div>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">Class 8B</p>
+                <p class="text-[10px] text-slate-400">(Avg 98%)</p>
+              </div>
+              <div class="text-center">
+                <div class="donut-chart mx-auto mb-2">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" stroke-width="3"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad3)" stroke-width="3" stroke-dasharray="95 5" stroke-linecap="round"/>
+                    <defs><linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#38bdf8"/><stop offset="100%" style="stop-color:#0ea5e9"/></linearGradient></defs>
+                  </svg>
+                  <div class="label text-sky font-bold">95%</div>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">Class 6A</p>
+                <p class="text-[10px] text-slate-400">(Avg 95%)</p>
+              </div>
+            </div>
+
+            <!-- Larger Donuts + Info -->
+            <div class="grid grid-cols-2 gap-4 mb-5">
+              <div class="flex flex-col items-center">
+                <div class="donut-lg mb-2">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" stroke-width="2.5"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad4)" stroke-width="2.5" stroke-dasharray="95 5" stroke-linecap="round"/>
+                    <defs><linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#0d9488"/><stop offset="100%" style="stop-color:#10b981"/></linearGradient></defs>
+                  </svg>
+                  <div class="label text-teal font-bold">95%</div>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">Class 6A</p>
+                <p class="text-[10px] text-slate-400">(Avg 95%)</p>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="donut-lg mb-2">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" stroke-width="2.5"/>
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#grad5)" stroke-width="2.5" stroke-dasharray="95 5" stroke-linecap="round"/>
+                    <defs><linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#6366f1"/><stop offset="100%" style="stop-color:#8b5cf6"/></linearGradient></defs>
+                  </svg>
+                  <div class="label text-royal font-bold">95%</div>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">Class 8B</p>
+                <p class="text-[10px] text-slate-400">(Avg 95%)</p>
+              </div>
+            </div>
+
+            <!-- Top Performing Class -->
+            <div class="bg-gradient-to-r from-emerald/5 to-teal/5 rounded-lg p-3 mb-3">
+              <h4 class="text-xs font-bold text-slate-700 mb-2">Top Performing Class</h4>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald to-teal flex items-center justify-center text-white text-[10px] font-bold">JN</div>
+                  <div><p class="text-xs font-semibold text-slate-700">Jatim Name</p><p class="text-[10px] text-slate-400">Average Grade</p></div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-emerald/15 flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5 text-emerald" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Class Needing Support -->
+            <div class="bg-gradient-to-r from-rose/5 to-pink-500/5 rounded-lg p-3">
+              <h4 class="text-xs font-bold text-slate-700 mb-2">Class Needing Support</h4>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-slate-300 to-slate-400 flex items-center justify-center text-white text-[10px] font-bold">CR</div>
+                  <div><p class="text-xs font-semibold text-slate-700">Color Ria</p><p class="text-[10px] text-slate-400">Grade</p></div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-rose/15 flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5 text-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200/60 px-6 py-4">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p class="text-xs text-slate-400">Copyright &copy; 2024 DigiSchool Portal</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="text-xs text-slate-400 hover:text-teal transition">Home</a>
+          <a href="#" class="text-xs text-slate-400 hover:text-teal transition">Links</a>
+          <a href="#" class="text-xs text-slate-400 hover:text-teal transition">Contacts</a>
+          <a href="#" class="text-xs text-slate-400 hover:text-teal transition">Footer</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const isHidden = sidebar.style.transform === 'translateX(0px)';
+      sidebar.style.transform = isHidden ? 'translateX(-100%)' : 'translateX(0px)';
+      overlay.classList.toggle('hidden');
+    }
+
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Math', 'Science', 'History', 'English', 'Arts', 'English', 'Arts'],
+        datasets: [
+          {
+            label: 'Avg Grade',
+            data: [65, 55, 50, 60, 45, 58, 42],
+            backgroundColor: 'rgba(56, 189, 248, 0.8)',
+            borderColor: '#38bdf8',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          },
+          {
+            label: 'Performance %',
+            data: [72, 60, 45, 68, 50, 55, 38],
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: '#10b981',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0f1b2d',
+            titleFont: { family: 'Inter', size: 11 },
+            bodyFont: { family: 'Inter', size: 11 },
+            padding: 10,
+            cornerRadius: 8,
+            displayColors: true,
+            boxPadding: 4
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 80,
+            ticks: {
+              font: { family: 'Inter', size: 10 },
+              color: '#94a3b8',
+              stepSize: 10
+            },
+            grid: { color: '#f1f5f9', drawBorder: false }
+          },
+          x: {
+            ticks: {
+              font: { family: 'Inter', size: 10 },
+              color: '#94a3b8'
+            },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
