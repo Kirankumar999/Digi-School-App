@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 
 const navItems = [
   {
     label: "Dashboard",
+    href: "/",
     icon: (
       <path
         strokeLinecap="round"
@@ -16,7 +19,7 @@ const navItems = [
   },
   {
     label: "Students",
-    active: true,
+    href: "/students",
     icon: (
       <path
         strokeLinecap="round"
@@ -28,6 +31,7 @@ const navItems = [
   },
   {
     label: "Teachers",
+    href: "/teachers",
     icon: (
       <path
         strokeLinecap="round"
@@ -39,6 +43,7 @@ const navItems = [
   },
   {
     label: "Classes",
+    href: "/classes",
     icon: (
       <path
         strokeLinecap="round"
@@ -49,7 +54,44 @@ const navItems = [
     ),
   },
   {
+    label: "Worksheets",
+    href: "/worksheets",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      />
+    ),
+  },
+  {
+    label: "Lesson Plans",
+    href: "/lesson-plans",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+      />
+    ),
+  },
+  {
+    label: "Tests",
+    href: "/tests",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+      />
+    ),
+  },
+  {
     label: "Reports",
+    href: "/reports",
     icon: (
       <path
         strokeLinecap="round"
@@ -61,6 +103,7 @@ const navItems = [
   },
   {
     label: "Settings",
+    href: "/settings",
     icon: (
       <>
         <path
@@ -82,6 +125,18 @@ const navItems = [
 
 export function Sidebar() {
   const [open, setOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
 
   return (
     <>
@@ -93,7 +148,7 @@ export function Sidebar() {
         />
       )}
 
-      {/* Hamburger button (rendered via portal-like fixed positioning) */}
+      {/* Hamburger button */}
       <button
         className="fixed top-3 left-3 z-50 lg:hidden p-2 rounded-lg bg-white shadow-md text-slate-600 hover:bg-slate-50"
         onClick={() => setOpen(!open)}
@@ -126,34 +181,52 @@ export function Sidebar() {
 
         {/* Nav items */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                item.active
-                  ? "bg-gradient-to-r from-teal to-emerald text-white shadow-lg shadow-teal/20"
-                  : "text-slate-400 hover:bg-navy-hover hover:text-slate-200"
-              }`}
-              onClick={() => setOpen(false)}
-            >
-              <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {item.icon}
-              </svg>
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            return (
+              <button
+                key={item.label}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-gradient-to-r from-teal to-emerald text-white shadow-lg shadow-teal/20"
+                    : "text-slate-400 hover:bg-navy-hover hover:text-slate-200"
+                }`}
+                onClick={() => { setOpen(false); router.push(item.href); }}
+              >
+                <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {item.icon}
+                </svg>
+                {item.label}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* User info */}
+        {/* User info + Logout */}
         <div className="px-4 py-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky to-royal flex items-center justify-center text-white text-xs font-bold">
-              AD
+            {user?.profilePicture ? (
+              <img src={user.profilePicture} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-white/20" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky to-royal flex items-center justify-center text-white text-xs font-bold">
+                {initials}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-sm font-medium leading-tight truncate">
+                {user?.name || "Loading..."}
+              </p>
+              <p className="text-slate-400 text-xs truncate">{user?.email || ""}</p>
             </div>
-            <div>
-              <p className="text-white text-sm font-medium leading-tight">Admin User</p>
-              <p className="text-slate-400 text-xs">admin@digischool.com</p>
-            </div>
+            <button
+              onClick={logout}
+              title="Sign out"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
           </div>
         </div>
       </aside>

@@ -13,12 +13,6 @@ export default function Home() {
       {/* ===== Column 1: Student & Teacher Management ===== */}
       <div className="min-w-0 space-y-4">
         <StudentDirectory />
-
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-5 bg-gradient-to-b from-teal to-emerald rounded-full" />
-          <h2 className="text-sm font-bold text-slate-700">1. Student Profile Management</h2>
-        </div>
-
         <TeacherDirectory />
       </div>
 
