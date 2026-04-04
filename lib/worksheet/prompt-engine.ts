@@ -1,4 +1,4 @@
-import { getChapterContext, getTopics } from "@/lib/data/ncert-syllabus";
+import { getChapterContext, getTopics } from "@/lib/data/mscert-syllabus";
 import type { GenerateRequest, QuestionType } from "./schema";
 
 const TYPE_LABELS: Record<QuestionType, string> = {
@@ -28,7 +28,7 @@ export function buildPrompt(req: GenerateRequest): string {
 
   const topicStr = req.topic ? `, Topic: "${req.topic}"` : "";
 
-  return `You are an expert NCERT curriculum worksheet generator for Indian schools.
+  return `You are an expert MSCERT (Maharashtra State Board) curriculum worksheet generator for Indian schools.
 
 CONTEXT:
 - ${chapterContext}${topicStr}

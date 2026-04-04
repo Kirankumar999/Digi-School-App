@@ -286,7 +286,7 @@ export default function WorksheetsPage() {
             {svgIcon("M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-5 h-5")}
             Smart Worksheet Generator
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">AI-powered, NCERT-aligned worksheet creation</p>
+          <p className="text-sm text-slate-500 mt-0.5">AI-powered, MSCERT-aligned worksheet creation</p>
         </div>
         <div className="flex bg-slate-100 rounded-xl p-1">
           {(["generate", "history"] as const).map((t) => (
@@ -644,10 +644,10 @@ export default function WorksheetsPage() {
                 </div>
                 <h3 className="text-lg font-bold text-slate-800 mb-2">Create Your Worksheet</h3>
                 <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
-                  Select class, subject, and chapter from the NCERT syllabus, choose your preferences, and let AI generate a curriculum-aligned worksheet.
+                  Select class, subject, and chapter from the MSCERT syllabus, choose your preferences, and let AI generate a curriculum-aligned worksheet.
                 </p>
                 <div className="flex items-center justify-center gap-6 text-xs text-slate-400">
-                  <span className="flex items-center gap-1.5">{svgIcon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} NCERT Aligned</span>
+                  <span className="flex items-center gap-1.5">{svgIcon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} MSCERT Aligned</span>
                   <span className="flex items-center gap-1.5">{svgIcon("M13 10V3L4 14h7v7l9-11h-7z", "w-4 h-4")} AI Powered</span>
                   <span className="flex items-center gap-1.5">{svgIcon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-4 h-4")} PDF Export</span>
                 </div>

@@ -10,9 +10,9 @@ A comprehensive school management application built with **Next.js 16**, **React
 - **Class Management** — Create and manage classes, capacity tracking, teacher assignment, schedule management
 
 ### AI-Powered Features
-- **Smart Worksheet Generator** — AI generates NCERT-aligned worksheets with MCQ, short/long answer, fill-in-the-blank, true/false, and match-the-following questions. Supports English, Hindi, Marathi, and Bilingual output. PDF download with answer keys.
+- **Smart Worksheet Generator** — AI generates MSCERT (Maharashtra State Board)-aligned worksheets with MCQ, short/long answer, fill-in-the-blank, true/false, and match-the-following questions. Supports English, Hindi, Marathi, and Bilingual output. PDF download with answer keys.
 - **AI Lesson Plan Generator** — Generates detailed lesson plans with learning objectives, lesson flow timeline, differentiated instruction, board work, homework, and assessment criteria. Multiple teaching methods supported.
-- **AI Answer Sheet Evaluator** — Upload or photograph handwritten answer sheets. Claude's vision AI reads handwriting, evaluates answers against NCERT curriculum, awards marks with per-question feedback, and generates strengths/improvement areas.
+- **AI Answer Sheet Evaluator** — Upload or photograph handwritten answer sheets. Claude's vision AI reads handwriting, evaluates answers against MSCERT curriculum, awards marks with per-question feedback, and generates strengths/improvement areas.
 - **AI Report Card Generator** — Aggregates student test data across subjects, generates comprehensive report cards with AI-written remarks, co-scholastic grades, strengths, and parent recommendations. Downloadable as branded PDF.
 - **Student Performance Analytics** — School-wide overview (subject performance, grade distribution, monthly trends, top performers), individual student analytics with charts, score timelines, and subject breakdowns.
 
@@ -128,7 +128,7 @@ Digi-School-App/
 │   ├── lesson-plan/          # Lesson plan AI pipeline
 │   ├── test-evaluator/       # Answer evaluation AI pipeline
 │   ├── report-card/          # Report card AI pipeline
-│   ├── data/                 # NCERT syllabus data
+│   ├── data/                 # MSCERT syllabus data
 │   ├── auth.ts               # JWT helpers
 │   ├── mongodb.ts            # DB connection
 │   └── AuthContext.tsx        # Client auth context

@@ -3,7 +3,7 @@ import type { EvaluateRequest } from "./schema";
 export function buildEvaluationPrompt(req: EvaluateRequest): string {
   const chapterStr = req.chapter ? `, Chapter: "${req.chapter}"` : "";
 
-  return `You are an expert NCERT answer sheet evaluator for Indian primary schools.
+  return `You are an expert MSCERT (Maharashtra State Board) answer sheet evaluator for Indian schools.
 
 CONTEXT:
 - Subject: ${req.subject}${chapterStr}
@@ -15,7 +15,7 @@ CONTEXT:
 TASK:
 Examine the uploaded image of a student's handwritten answer sheet. For each question visible:
 1. Read the student's handwritten answer carefully.
-2. Determine the correct answer based on the NCERT Class ${req.classNum} ${req.subject} curriculum.
+2. Determine the correct answer based on the MSCERT Class ${req.classNum} ${req.subject} curriculum.
 3. Award marks fairly — give partial credit where appropriate.
 4. Provide brief, constructive feedback per question.
 

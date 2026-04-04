@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSubjects, getChapters, getTopics } from "@/lib/data/ncert-syllabus";
+import { getSubjects, getChapters, getTopics } from "@/lib/data/mscert-syllabus";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -19,5 +19,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ subjects: getSubjects(classNum) });
   }
 
-  return NextResponse.json({ classes: [1, 2, 3, 4, 5, 6, 7, 8] });
+  return NextResponse.json({ classes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
 }

@@ -1,4 +1,4 @@
-import { getChapterContext, getTopics } from "@/lib/data/ncert-syllabus";
+import { getChapterContext, getTopics } from "@/lib/data/mscert-syllabus";
 import type { GenerateLessonPlanRequest } from "./schema";
 
 const METHOD_GUIDES: Record<string, string> = {
@@ -33,7 +33,7 @@ export function buildLessonPlanPrompt(req: GenerateLessonPlanRequest): string {
 
   const topicStr = req.topic ? `, Topic: "${req.topic}"` : "";
 
-  return `You are an expert NCERT curriculum lesson plan designer for Indian primary schools.
+  return `You are an expert MSCERT (Maharashtra State Board) curriculum lesson plan designer for Indian schools.
 
 CONTEXT:
 - ${chapterContext}${topicStr}
@@ -55,7 +55,7 @@ STRICT RULES:
 4. Use Indian context for examples (₹ for money, Indian names, local references).
 5. Materials should be low-cost and available in typical Indian primary schools (no expensive tech assumed).
 6. Board work should include actual content the teacher writes on the blackboard.
-7. Homework should reference specific NCERT textbook exercise numbers when possible.
+7. Homework should reference specific MSCERT textbook exercise numbers when possible.
 8. Differentiated instruction MUST have practical, specific strategies — not vague statements.
 9. Each lessonFlow phase must have all fields: phase, duration, activity, teacherActions, studentActions, tips.
 ${req.includeReflection ? "10. Include a teacherReflection section with 2-3 reflective questions for the teacher." : "10. Set teacherReflection to an empty string."}
