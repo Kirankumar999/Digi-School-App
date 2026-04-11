@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Student from "@/lib/models/Student";
@@ -7,6 +6,8 @@ import TestResult from "@/lib/models/TestResult";
 import ReportCard from "@/lib/models/ReportCard";
 import { GenerateReportCardRequestSchema, ReportCardAIResponseSchema } from "@/lib/report-card/schema";
 import { buildReportCardPrompt, buildReportCardRetryPrompt } from "@/lib/report-card/prompt-engine";
+import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
+import { getCached, setCache } from "@/lib/worksheet/cache";
 
 function extractJSON(text: string): string {
   let cleaned = text.trim();
@@ -31,8 +32,10 @@ export async function POST(req: NextRequest) {
     const user = await getAuthUser();
     if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
+    let anthropic;
+    try { anthropic = getAIClient(); } catch (e) {
+      return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+    }
 
     const body = await req.json();
     const parsed = GenerateReportCardRequestSchema.safeParse(body);
@@ -45,8 +48,6 @@ export async function POST(req: NextRequest) {
     if (!student) return NextResponse.json({ error: "Student not found" }, { status: 404 });
 
     const classNum = parseInt(student.grade) || 1;
-    console.log("classNum", classNum);
-    console.log("student", student);
 
     const subjectAgg = await TestResult.aggregate([
       { $match: { studentId: student._id } },
@@ -78,6 +79,33 @@ export async function POST(req: NextRequest) {
     const overallPercentage = grandTotal > 0 ? Math.round((grandObtained / grandTotal) * 1000) / 10 : 0;
     const overallGrade = calcGrade(overallPercentage);
 
+    // Cache: same student + term + year = same report card
+    const cacheKey = `rc:${genReq.studentId}:${genReq.term}:${genReq.academicYear}:${grandTotal}:${grandObtained}`;
+    const cachedAI = await getCached(cacheKey);
+
+    if (cachedAI) {
+      const aiData = JSON.parse(cachedAI);
+      const remarksMap = new Map(aiData.subjectRemarks.map((r: { subject: string; remarks: string }) => [r.subject, r.remarks]));
+      const subjectGrades = subjects.map((s) => ({ ...s, remarks: (remarksMap.get(s.subject) as string) || "" }));
+      const att = genReq.attendance || { totalDays: 0, presentDays: 0 };
+      const attPct = att.totalDays > 0 ? Math.round((att.presentDays / att.totalDays) * 1000) / 10 : 0;
+      const reportCardId = `RC-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+
+      const saved = await ReportCard.create({
+        reportCardId, studentId: student._id, studentName: `${student.firstName} ${student.lastName}`,
+        studentGrade: student.grade, studentSection: student.section || "", classNum,
+        term: genReq.term, academicYear: genReq.academicYear, subjectGrades,
+        overallPercentage, overallGrade,
+        attendance: { totalDays: att.totalDays, presentDays: att.presentDays, percentage: attPct },
+        aiRemarks: aiData.aiRemarks, strengths: aiData.strengths,
+        areasToImprove: aiData.areasToImprove, recommendations: aiData.recommendations,
+        teacherComments: genReq.teacherComments || "", principalComments: genReq.principalComments || "",
+        coScholastic: aiData.coScholastic, generatedBy: user._id?.toString() || "",
+      });
+
+      return NextResponse.json({ message: "Report card generated (cached AI)", reportCard: saved.toObject() }, { status: 201 });
+    }
+
     const prompt = buildReportCardPrompt({
       studentName: `${student.firstName} ${student.lastName}`,
       classNum,
@@ -89,7 +117,8 @@ export async function POST(req: NextRequest) {
       overallGrade,
     });
 
-    const anthropic = new Anthropic({ apiKey });
+    const model = getModelId("fast");
+    const maxTokens = getMaxTokens("fast");
     let aiData;
     let attempts = 0;
     let lastError = "";
@@ -99,9 +128,17 @@ export async function POST(req: NextRequest) {
       const currentPrompt = attempts === 1 ? prompt : buildReportCardRetryPrompt(prompt, lastError);
 
       const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2048,
+        model,
+        max_tokens: maxTokens,
         messages: [{ role: "user", content: currentPrompt }],
+      });
+
+      logTokenUsage({
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        model,
+        feature: "report-card",
+        cached: attempts > 1,
       });
 
       const content = response.content[0];
@@ -122,6 +159,11 @@ export async function POST(req: NextRequest) {
         if (attempts < 2) continue;
         return NextResponse.json({ error: "Failed to parse AI response", details: lastError }, { status: 422 });
       }
+    }
+
+    // Cache the AI response for reuse
+    if (aiData) {
+      await setCache(cacheKey, JSON.stringify(aiData));
     }
 
     if (!aiData) return NextResponse.json({ error: "AI generation failed" }, { status: 500 });

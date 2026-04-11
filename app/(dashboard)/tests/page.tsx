@@ -106,17 +106,33 @@ export default function TestsPage() {
     setShowDropdown(false);
   };
 
+  const compressImage = (dataUrl: string, maxWidth = 1200, quality = 0.7): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        const c = document.createElement("canvas");
+        c.width = img.width * scale;
+        c.height = img.height * scale;
+        c.getContext("2d")?.drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL("image/jpeg", quality));
+      };
+      img.src = dataUrl;
+    });
+  };
+
   // Image upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) { setMsg({ type: "error", text: "Please upload an image file" }); return; }
     if (file.size > 10 * 1024 * 1024) { setMsg({ type: "error", text: "Image must be under 10MB" }); return; }
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       const dataUrl = reader.result as string;
-      setImagePreview(dataUrl);
-      setImageBase64(dataUrl);
+      const compressed = await compressImage(dataUrl);
+      setImagePreview(compressed);
+      setImageBase64(compressed);
     };
     reader.readAsDataURL(file);
   };
@@ -124,23 +140,24 @@ export default function TestsPage() {
   // Camera
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } } });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 960 } } });
       streamRef.current = stream;
       if (videoRef.current) { videoRef.current.srcObject = stream; }
       setUseCamera(true);
     } catch { setMsg({ type: "error", text: "Camera access denied" }); }
   };
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     if (!videoRef.current || !canvasRef.current) return;
     const v = videoRef.current;
     const c = canvasRef.current;
     c.width = v.videoWidth;
     c.height = v.videoHeight;
     c.getContext("2d")?.drawImage(v, 0, 0);
-    const dataUrl = c.toDataURL("image/jpeg", 0.9);
-    setImagePreview(dataUrl);
-    setImageBase64(dataUrl);
+    const dataUrl = c.toDataURL("image/jpeg", 0.85);
+    const compressed = await compressImage(dataUrl);
+    setImagePreview(compressed);
+    setImageBase64(compressed);
     stopCamera();
   };
 

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Student from "@/lib/models/Student";
 import TestResult from "@/lib/models/TestResult";
 import { EvaluateRequestSchema, EvaluationAIResponseSchema } from "@/lib/test-evaluator/schema";
 import { buildEvaluationPrompt, buildEvaluationRetryPrompt } from "@/lib/test-evaluator/prompt-engine";
+import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
 
 function extractJSON(text: string): string {
   let cleaned = text.trim();
@@ -23,6 +23,15 @@ function inferMediaType(base64: string): "image/jpeg" | "image/png" | "image/gif
   return "image/jpeg";
 }
 
+function compressBase64Image(base64: string): string {
+  const sizeKB = Math.ceil((base64.length * 3) / 4 / 1024);
+  if (sizeKB <= 500) return base64;
+  // For very large images (> 500KB), the frontend should resize before sending.
+  // Truncation is not ideal, so we just log a warning and send as-is.
+  console.warn(`[TestEvaluator] Large image: ${sizeKB}KB. Consider resizing on client.`);
+  return base64;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getAuthUser();
@@ -30,9 +39,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
+    let anthropic;
+    try { anthropic = getAIClient(); } catch (e) {
+      return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
     const body = await req.json();
@@ -49,15 +58,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
-    // Strip data URI prefix if present
     let imageBase64 = evalReq.imageBase64;
     if (imageBase64.includes(",")) {
       imageBase64 = imageBase64.split(",")[1];
     }
+    imageBase64 = compressBase64Image(imageBase64);
 
     const mediaType = inferMediaType(imageBase64);
     const prompt = buildEvaluationPrompt(evalReq);
-    const anthropic = new Anthropic({ apiKey });
+    const model = getModelId("vision");
+    const maxTokens = getMaxTokens("vision");
 
     let evalData;
     let attempts = 0;
@@ -68,8 +78,8 @@ export async function POST(req: NextRequest) {
       const currentPrompt = attempts === 1 ? prompt : buildEvaluationRetryPrompt(prompt, lastError);
 
       const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
+        model,
+        max_tokens: maxTokens,
         messages: [{
           role: "user",
           content: [
@@ -80,6 +90,14 @@ export async function POST(req: NextRequest) {
             { type: "text", text: currentPrompt },
           ],
         }],
+      });
+
+      logTokenUsage({
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        model,
+        feature: "test-evaluator",
+        cached: attempts > 1,
       });
 
       const content = response.content[0];

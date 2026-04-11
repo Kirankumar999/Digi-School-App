@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Worksheet from "@/lib/models/Worksheet";
 import { GenerateRequestSchema, WorksheetAIResponseSchema } from "@/lib/worksheet/schema";
 import { buildPrompt, buildRetryPrompt } from "@/lib/worksheet/prompt-engine";
 import { buildCacheKey, getCached, setCache } from "@/lib/worksheet/cache";
+import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
 
 function extractJSON(text: string): string {
-  // Strip markdown code fences if present
   let cleaned = text.trim();
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
@@ -23,12 +22,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY not configured. Add it to your .env file." },
-        { status: 500 }
-      );
+    let anthropic;
+    try { anthropic = getAIClient(); } catch (e) {
+      return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
     const body = await req.json();
@@ -41,7 +37,6 @@ export async function POST(req: NextRequest) {
     }
     const genReq = parsed.data;
 
-    // Check cache first
     const cacheKey = buildCacheKey(genReq);
     const cachedData = await getCached(cacheKey);
 
@@ -54,9 +49,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Build prompt and call Claude
     const prompt = buildPrompt(genReq);
-    const anthropic = new Anthropic({ apiKey });
+    const model = getModelId("standard");
+    const maxTokens = getMaxTokens("standard");
 
     let worksheetData;
     let attempts = 0;
@@ -67,9 +62,17 @@ export async function POST(req: NextRequest) {
       const currentPrompt = attempts === 1 ? prompt : buildRetryPrompt(prompt, lastError);
 
       const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
+        model,
+        max_tokens: maxTokens,
         messages: [{ role: "user", content: currentPrompt }],
+      });
+
+      logTokenUsage({
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        model,
+        feature: "worksheet",
+        cached: attempts > 1,
       });
 
       const content = response.content[0];

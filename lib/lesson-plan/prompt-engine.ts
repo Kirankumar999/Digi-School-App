@@ -48,48 +48,18 @@ ${METHOD_GUIDES[req.teachingMethod]}
 LESSON FLOW STRUCTURE:
 Design exactly ${DURATION_PHASES[req.duration]}.
 
-STRICT RULES:
-1. Output ONLY valid JSON — no markdown, no backticks, no explanation outside JSON.
-2. Every activity and example must be curriculum-accurate for ${chapterContext}.
-3. Activities must be age-appropriate for Class ${req.classNum} students (ages ${req.classNum + 5}-${req.classNum + 6}).
-4. Use Indian context for examples (₹ for money, Indian names, local references).
-5. Materials should be low-cost and available in typical Indian primary schools (no expensive tech assumed).
-6. Board work should include actual content the teacher writes on the blackboard.
-7. Homework should reference specific MSCERT textbook exercise numbers when possible.
-8. Differentiated instruction MUST have practical, specific strategies — not vague statements.
-9. Each lessonFlow phase must have all fields: phase, duration, activity, teacherActions, studentActions, tips.
-${req.includeReflection ? "10. Include a teacherReflection section with 2-3 reflective questions for the teacher." : "10. Set teacherReflection to an empty string."}
+RULES:
+1. Output ONLY valid JSON — no markdown, no backticks.
+2. Curriculum-accurate for ${chapterContext}. Age-appropriate for Class ${req.classNum}.
+3. Indian context (₹, Indian names). Low-cost materials. Board work = actual content.
+4. Homework references MSCERT textbook. Differentiated instruction must be specific, not vague.
+5. Each lessonFlow phase needs: phase, duration, activity, teacherActions, studentActions, tips.
+${req.includeReflection ? "6. Include teacherReflection with 2-3 reflective questions." : "6. Set teacherReflection to empty string."}
 
-REQUIRED JSON SCHEMA:
-{
-  "title": "string — descriptive title like 'Lesson Plan: Addition of Fractions (Class 5 Mathematics)'",
-  "learningObjectives": ["string — 2-6 specific, measurable objectives using Bloom's verbs"],
-  "prerequisites": ["string — what students should already know"],
-  "materialsNeeded": ["string — textbook, chalk, specific manipulatives, charts, etc."],
-  "lessonFlow": [
-    {
-      "phase": "string — phase name (e.g., Introduction, Explanation, Practice, Assessment & Closure)",
-      "duration": "string — e.g., '8 minutes'",
-      "activity": "string — detailed description of what happens",
-      "teacherActions": "string — specific teacher actions",
-      "studentActions": "string — what students do",
-      "tips": "string — practical teaching tips"
-    }
-  ],
-  "differentiatedInstruction": {
-    "slowLearners": "string — specific strategies with examples",
-    "advancedLearners": "string — extension activities with examples",
-    "visualLearners": "string — visual aids and strategies",
-    "kinestheticLearners": "string — hands-on activities"
-  },
-  "boardWork": "string — actual content for the blackboard including diagrams described in text",
-  "homework": "string — specific assignment with textbook reference",
-  "assessmentCriteria": ["string — 2-8 observable criteria to check understanding"],
-  "crossCurricularLinks": "string — connection to other subjects",
-  "teacherReflection": "string — reflective questions for the teacher"
-}
+JSON SCHEMA:
+{"title":"string","learningObjectives":["string"],"prerequisites":["string"],"materialsNeeded":["string"],"lessonFlow":[{"phase":"string","duration":"string","activity":"string","teacherActions":"string","studentActions":"string","tips":"string"}],"differentiatedInstruction":{"slowLearners":"string","advancedLearners":"string","visualLearners":"string","kinestheticLearners":"string"},"boardWork":"string","homework":"string","assessmentCriteria":["string"],"crossCurricularLinks":"string","teacherReflection":"string"}
 
-Generate the lesson plan now as pure JSON:`;
+Output pure JSON:`;
 }
 
 export function buildLessonPlanRetryPrompt(original: string, error: string): string {

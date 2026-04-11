@@ -45,27 +45,13 @@ TASK:
 5. For EACH subject, write a brief 1-sentence remark reflecting the student's performance.
 6. Suggest 3-5 co-scholastic activity grades (e.g. Art, Music, Sports, Discipline, Cleanliness) using A/B/C grading.
 
-IMPORTANT:
-- These are primary school children (ages ${input.classNum + 5}-${input.classNum + 6}). Be encouraging and positive.
-- Use simple language that parents can understand.
-- Be specific — reference actual subjects and performance, not generic phrases.
-- Output ONLY valid JSON, no markdown, no backticks, no explanation outside JSON.
+RULES:
+- Be encouraging, positive, specific. Simple language for parents. Output ONLY valid JSON.
 
-REQUIRED JSON SCHEMA:
-{
-  "aiRemarks": "string — warm overall teacher remark, 2-3 sentences",
-  "strengths": ["string — specific strength based on data"],
-  "areasToImprove": ["string — specific, encouraging improvement area"],
-  "recommendations": ["string — practical tip for parents"],
-  "subjectRemarks": [
-    { "subject": "string — subject name exactly as given", "remarks": "string — 1-sentence remark" }
-  ],
-  "coScholastic": [
-    { "activity": "string — activity name", "grade": "string — A, B, or C" }
-  ]
-}
+JSON SCHEMA:
+{"aiRemarks":"string(2-3 sentences)","strengths":["string"],"areasToImprove":["string"],"recommendations":["string"],"subjectRemarks":[{"subject":"string(exact name)","remarks":"string(1 sentence)"}],"coScholastic":[{"activity":"string","grade":"A|B|C"}]}
 
-Generate the report card JSON now:`;
+Output pure JSON:`;
 }
 
 export function buildReportCardRetryPrompt(original: string, error: string): string {

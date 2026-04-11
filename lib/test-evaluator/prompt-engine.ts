@@ -28,44 +28,17 @@ GRADING SCALE:
 - 40-49%: D (Below Average)
 - Below 40%: F (Needs Improvement)
 
-STRICT RULES:
-1. Output ONLY valid JSON — no markdown, no backticks, no explanation outside JSON.
-2. Read EVERY question visible in the image. If handwriting is unclear, make your best interpretation and note it in feedback.
-3. marksAwarded must never exceed maxMarks for any question.
-4. marksObtained must equal the sum of all marksAwarded values.
-5. percentage must be (marksObtained / totalMarks) * 100, rounded to 1 decimal.
-6. Be encouraging in feedback — these are primary school children (ages ${req.classNum + 5}-${req.classNum + 6}).
-7. strengths should highlight what the student did well.
-8. areasToImprove should be specific and actionable, not discouraging.
-9. If you cannot read a particular answer, set studentAnswer to "[Unclear handwriting]" and give 0 marks with appropriate feedback.
-10. Distribute the totalMarks (${req.totalMarks}) across the questions you identify.
+RULES:
+1. Output ONLY valid JSON — no markdown, no backticks.
+2. Read EVERY visible question. Interpret unclear handwriting and note it.
+3. marksAwarded <= maxMarks per question. marksObtained = sum of marksAwarded.
+4. percentage = (marksObtained/totalMarks)*100, 1 decimal. Be encouraging — these are school children.
+5. Unclear answers: studentAnswer="[Unclear handwriting]", 0 marks. Distribute totalMarks (${req.totalMarks}) across questions.
 
-REQUIRED JSON SCHEMA:
-{
-  "testName": "string — name of the test",
-  "subject": "string — subject name",
-  "totalMarks": number,
-  "marksObtained": number,
-  "percentage": number,
-  "grade": "string — A+, A, B+, B, C, D, or F",
-  "questions": [
-    {
-      "questionNumber": number,
-      "questionText": "string — the question as written/interpreted",
-      "studentAnswer": "string — what the student wrote",
-      "correctAnswer": "string — the correct answer",
-      "marksAwarded": number,
-      "maxMarks": number,
-      "feedback": "string — brief, constructive feedback",
-      "isCorrect": boolean
-    }
-  ],
-  "overallFeedback": "string — 2-3 sentence encouraging summary",
-  "strengths": ["string — specific things the student did well"],
-  "areasToImprove": ["string — specific, actionable improvement areas"]
-}
+JSON SCHEMA:
+{"testName":"string","subject":"string","totalMarks":number,"marksObtained":number,"percentage":number,"grade":"A+|A|B+|B|C|D|F","questions":[{"questionNumber":number,"questionText":"string","studentAnswer":"string","correctAnswer":"string","marksAwarded":number,"maxMarks":number,"feedback":"string","isCorrect":boolean}],"overallFeedback":"string","strengths":["string"],"areasToImprove":["string"]}
 
-Evaluate the answer sheet now as pure JSON:`;
+Output pure JSON:`;
 }
 
 export function buildEvaluationRetryPrompt(original: string, error: string): string {

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import LessonPlan from "@/lib/models/LessonPlan";
 import { GenerateLessonPlanRequestSchema, LessonPlanAIResponseSchema } from "@/lib/lesson-plan/schema";
 import { buildLessonPlanPrompt, buildLessonPlanRetryPrompt } from "@/lib/lesson-plan/prompt-engine";
 import { buildCacheKey, getCached, setCache } from "@/lib/worksheet/cache";
+import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
 
 function extractJSON(text: string): string {
   let cleaned = text.trim();
@@ -22,12 +22,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "ANTHROPIC_API_KEY not configured. Add it to your .env file." },
-        { status: 500 }
-      );
+    let anthropic;
+    try { anthropic = getAIClient(); } catch (e) {
+      return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
     const body = await req.json();
@@ -40,7 +37,6 @@ export async function POST(req: NextRequest) {
     }
     const genReq = parsed.data;
 
-    // Build cache key (reuse worksheet cache infra with "lp:" prefix)
     const cacheKey = `lp:${genReq.classNum}:${genReq.subject}:${genReq.chapter}:${genReq.topic || "all"}:${genReq.duration}:${genReq.teachingMethod}:${new Date().toISOString().split("T")[0]}`;
     const cachedData = await getCached(cacheKey);
 
@@ -53,7 +49,8 @@ export async function POST(req: NextRequest) {
     }
 
     const prompt = buildLessonPlanPrompt(genReq);
-    const anthropic = new Anthropic({ apiKey });
+    const model = getModelId("standard");
+    const maxTokens = getMaxTokens("standard");
 
     let planData;
     let attempts = 0;
@@ -64,9 +61,17 @@ export async function POST(req: NextRequest) {
       const currentPrompt = attempts === 1 ? prompt : buildLessonPlanRetryPrompt(prompt, lastError);
 
       const response = await anthropic.messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
+        model,
+        max_tokens: maxTokens,
         messages: [{ role: "user", content: currentPrompt }],
+      });
+
+      logTokenUsage({
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+        model,
+        feature: "lesson-plan",
+        cached: attempts > 1,
       });
 
       const content = response.content[0];

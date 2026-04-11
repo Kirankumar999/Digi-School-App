@@ -56,37 +56,16 @@ MARKS ALLOCATION:
 - match_the_following: 3 marks each
 - long_answer: 4–5 marks each
 
-STRICT RULES:
-1. Output ONLY valid JSON — no markdown, no backticks, no explanation outside JSON.
-2. Every question must be curriculum-accurate for ${chapterContext}.
-3. MCQ options must be plausible (no joke answers).
-4. For true_false, the "answer" field must be a JSON boolean (true or false), not a string.
-5. For match_the_following, provide an array of {left, right} pairs.
-6. Number questions sequentially starting from 1.
-7. Include an "explanation" field for each question (brief, 1–2 sentences).
-8. estimatedTime should be realistic (e.g., "30 minutes").
+RULES:
+1. Output ONLY valid JSON — no markdown, no backticks.
+2. Curriculum-accurate for ${chapterContext}. MCQ options must be plausible.
+3. true_false answer = JSON boolean. match_the_following = array of {left,right} pairs.
+4. Sequential numbering from 1. Brief explanation per question.
 
-REQUIRED JSON SCHEMA:
-{
-  "title": "string — descriptive title including class, subject, chapter",
-  "instructions": "string — general instructions for students",
-  "questions": [
-    {
-      "id": "number",
-      "type": "mcq | short_answer | long_answer | fill_in_the_blank | true_false | match_the_following",
-      "question": "string",
-      "options": ["string"] (only for mcq, exactly 4),
-      "pairs": [{"left":"string","right":"string"}] (only for match_the_following),
-      "answer": "string | boolean (boolean only for true_false)",
-      "explanation": "string",
-      "marks": "number"
-    }
-  ],
-  "totalMarks": "number — sum of all question marks",
-  "estimatedTime": "string — e.g. '30 minutes'"
-}
+JSON SCHEMA:
+{"title":"string","instructions":"string","questions":[{"id":number,"type":"mcq|short_answer|long_answer|fill_in_the_blank|true_false|match_the_following","question":"string","options":["string"](mcq only,4),"pairs":[{"left":"string","right":"string"}](match only),"answer":"string|boolean","explanation":"string","marks":number}],"totalMarks":number,"estimatedTime":"string"}
 
-Generate the worksheet now as pure JSON:`;
+Output pure JSON:`;
 }
 
 export function buildRetryPrompt(originalPrompt: string, error: string): string {
