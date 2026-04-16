@@ -71,12 +71,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const arrayBuffer = await file.arrayBuffer();
     const workbook = new ExcelJS.Workbook();
     if (file.name.endsWith(".csv")) {
-      await workbook.csv.read(Readable.from(buffer));
+      await workbook.csv.read(Readable.from(Buffer.from(arrayBuffer)));
     } else {
-      await workbook.xlsx.load(buffer);
+      await workbook.xlsx.load(arrayBuffer);
     }
     const worksheet = workbook.worksheets[0];
     if (!worksheet) {

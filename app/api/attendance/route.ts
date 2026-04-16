@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         .sort({ firstName: 1, lastName: 1 })
         .lean();
       studentRecords = students.map((s) => ({
-        studentId: (s._id as string).toString(),
+        studentId: String(s._id),
         studentName: `${s.firstName} ${s.lastName}`,
         status: "present",
       }));

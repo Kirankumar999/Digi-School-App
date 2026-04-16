@@ -150,7 +150,6 @@ export default function TeachersPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/teachers/template"
             download
@@ -625,7 +624,6 @@ function UploadExcel({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           Need help formatting? <a href="/api/teachers/template" download className="text-indigo-600 font-semibold hover:underline">Download the template</a>
         </div>
 

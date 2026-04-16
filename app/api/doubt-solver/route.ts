@@ -90,6 +90,7 @@ End with a brief summary of the key concept.`;
           feature: "doubt-solver",
           inputTokens: response.usageMetadata.promptTokenCount || 0,
           outputTokens: response.usageMetadata.candidatesTokenCount || 0,
+          cached: false,
         });
       }
 

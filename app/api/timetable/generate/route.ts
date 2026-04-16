@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
           ...p,
           subject,
           teacherName: teacher ? `${teacher.firstName || ""} ${teacher.lastName || ""}`.trim() || teacher.teacherId : "",
-          teacherId: teacher ? (teacher._id as string).toString() : "",
+          teacherId: teacher ? String(teacher._id) : "",
         };
       });
       return { day, periods };
