@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="tealGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="navyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="55%" r="45%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="leftClip">
+      <rect x="55" y="30" width="65" height="140"/>
+    </clipPath>
+    <clipPath id="rightClip">
+      <rect x="120" y="30" width="65" height="140"/>
+    </clipPath>
+  </defs>
+
+  <!-- Subtle glow behind -->
+  <circle cx="120" cy="110" r="80" fill="url(#glow)"/>
+
+  <!-- ===== OPEN BOOK ===== -->
+  <!-- Left page -->
+  <path d="M60 155 C60 148, 65 142, 75 140 L115 135 C118 134.5, 120 136, 120 139 L120 175 C120 175, 118 173, 115 173 L75 178 C65 179.5, 60 174, 60 168 Z" fill="#e0f7fa" stroke="url(#tealGrad)" stroke-width="2.5"/>
+  <!-- Right page -->
+  <path d="M180 155 C180 148, 175 142, 165 140 L125 135 C122 134.5, 120 136, 120 139 L120 175 C120 175, 122 173, 125 173 L165 178 C175 179.5, 180 174, 180 168 Z" fill="#fff3e0" stroke="url(#orangeGrad)" stroke-width="2.5"/>
+  <!-- Book spine/binding -->
+  <path d="M58 152 L58 170 C58 178, 64 183, 74 182 L120 176 L166 182 C176 183, 182 178, 182 170 L182 152" fill="none" stroke="url(#navyGrad)" stroke-width="4" stroke-linecap="round"/>
+  <!-- Center spine notch -->
+  <path d="M117 176 Q120 180, 123 176" fill="none" stroke="url(#navyGrad)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- ===== LEFT BRAIN (Teal) ===== -->
+  <g clip-path="url(#leftClip)">
+    <!-- Brain outer shape -->
+    <path d="M120 130 L120 55 C120 50, 118 42, 112 38 C106 34, 98 32, 90 35 C82 32, 74 34, 70 40 C64 38, 58 42, 58 50 C54 52, 52 58, 54 64 C50 68, 50 76, 54 82 C52 88, 54 94, 58 98 C56 104, 58 112, 64 116 C68 120, 74 124, 80 128 C86 132, 94 134, 100 134 L112 134 C116 134, 120 132, 120 130 Z" fill="url(#tealGrad)"/>
+
+    <!-- Circuit lines (white) -->
+    <line x1="108" y1="55" x2="108" y2="90" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="96" y1="50" x2="96" y2="85" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="84" y1="55" x2="84" y2="95" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="72" y1="65" x2="72" y2="100" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- Horizontal circuit traces -->
+    <line x1="68" y1="75" x2="112" y2="75" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="74" y1="90" x2="110" y2="90" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="62" y1="65" x2="80" y2="65" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="80" y1="105" x2="108" y2="105" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Circuit nodes (white dots) -->
+    <circle cx="108" cy="55" r="3.5" fill="white"/>
+    <circle cx="96" cy="50" r="3" fill="white"/>
+    <circle cx="84" cy="55" r="3.5" fill="white"/>
+    <circle cx="72" cy="65" r="3" fill="white"/>
+    <circle cx="108" cy="75" r="3" fill="white"/>
+    <circle cx="96" cy="75" r="2.5" fill="white"/>
+    <circle cx="84" cy="75" r="3" fill="white"/>
+    <circle cx="72" cy="75" r="2.5" fill="white"/>
+    <circle cx="108" cy="90" r="2.5" fill="white"/>
+    <circle cx="96" cy="90" r="3" fill="white"/>
+    <circle cx="84" cy="90" r="2.5" fill="white"/>
+    <circle cx="72" cy="100" r="3" fill="white"/>
+    <circle cx="108" cy="105" r="3" fill="white"/>
+    <circle cx="96" cy="105" r="2.5" fill="white"/>
+    <circle cx="84" cy="105" r="3" fill="white"/>
+    <!-- Extra circuit nodes -->
+    <circle cx="64" cy="82" r="2.5" fill="white"/>
+    <circle cx="62" cy="65" r="2.5" fill="white"/>
+  </g>
+
+  <!-- ===== RIGHT HALF (Orange with arrow) ===== -->
+  <g clip-path="url(#rightClip)">
+    <!-- Right shape -->
+    <path d="M120 130 L120 55 C120 50, 122 42, 128 38 C134 34, 142 32, 150 35 C158 32, 166 34, 170 40 C176 38, 182 42, 182 50 C184 54, 184 60, 180 66 C184 72, 183 80, 178 86 C180 92, 178 100, 174 106 C176 112, 174 120, 168 124 C164 128, 158 132, 152 134 L138 134 C130 134, 124 132, 120 130 Z" fill="url(#orangeGrad)"/>
+
+    <!-- Circuit lines on right -->
+    <line x1="132" y1="65" x2="132" y2="95" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="144" y1="58" x2="144" y2="88" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="156" y1="55" x2="156" y2="90" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="168" y1="65" x2="168" y2="95" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- Horizontal circuit traces -->
+    <line x1="128" y1="78" x2="172" y2="78" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="130" y1="92" x2="165" y2="92" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Circuit nodes on right -->
+    <circle cx="132" cy="65" r="3" fill="white"/>
+    <circle cx="144" cy="58" r="2.5" fill="white"/>
+    <circle cx="156" cy="55" r="3" fill="white"/>
+    <circle cx="168" cy="65" r="2.5" fill="white"/>
+    <circle cx="132" cy="78" r="2.5" fill="white"/>
+    <circle cx="144" cy="78" r="3" fill="white"/>
+    <circle cx="156" cy="78" r="2.5" fill="white"/>
+    <circle cx="168" cy="78" r="3" fill="white"/>
+    <circle cx="132" cy="92" r="3" fill="white"/>
+    <circle cx="144" cy="92" r="2.5" fill="white"/>
+    <circle cx="156" cy="92" r="3" fill="white"/>
+
+    <!-- Growth Arrow -->
+    <path d="M130 120 C135 110, 140 100, 148 80 C152 70, 158 58, 165 48" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <polygon points="168,38 174,52 160,50" fill="white"/>
+  </g>
+
+  <!-- Center divider line -->
+  <line x1="120" y1="40" x2="120" y2="134" stroke="white" stroke-width="1" stroke-opacity="0.5"/>
+
+  <!-- ===== SPARKLE ELEMENTS ===== -->
+  <!-- Main sparkle (top right) -->
+  <g transform="translate(178, 36)">
+    <line x1="0" y1="-6" x2="0" y2="6" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-6" y1="0" x2="6" y2="0" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <!-- Small sparkle dots -->
+  <circle cx="172" cy="28" r="1.5" fill="#1e3a5f"/>
+  <circle cx="186" cy="32" r="1.2" fill="#1e3a5f"/>
+  <circle cx="184" cy="44" r="1.5" fill="#1e3a5f"/>
+</svg>

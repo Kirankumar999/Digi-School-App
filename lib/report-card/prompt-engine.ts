@@ -48,10 +48,15 @@ TASK:
 RULES:
 - Be encouraging, positive, specific. Simple language for parents. Output ONLY valid JSON.
 
-JSON SCHEMA:
-{"aiRemarks":"string(2-3 sentences)","strengths":["string"],"areasToImprove":["string"],"recommendations":["string"],"subjectRemarks":[{"subject":"string(exact name)","remarks":"string(1 sentence)"}],"coScholastic":[{"activity":"string","grade":"A|B|C"}]}
+ALL of these fields are REQUIRED:
+- "aiRemarks": string (warm overall remark, 2-3 sentences)
+- "strengths": array of strings (2-4 specific strengths)
+- "areasToImprove": array of strings (1-3 areas)
+- "recommendations": array of strings (2-4 tips for parents)
+- "subjectRemarks": array of {"subject":"exact subject name","remarks":"1-sentence remark"} for EACH subject
+- "coScholastic": array of {"activity":"string","grade":"A or B or C"} (3-5 activities)
 
-Output pure JSON:`;
+Output ONLY the JSON object, nothing else:`;
 }
 
 export function buildReportCardRetryPrompt(original: string, error: string): string {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 
 interface SyllabusChapter {
   number: number;
@@ -85,6 +86,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 export default function WorksheetsPage() {
+  const { t: tr, tGrade } = useLocale();
   const [tab, setTab] = useState<TabView>("generate");
 
   // Form state
@@ -284,9 +286,9 @@ export default function WorksheetsPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
             {svgIcon("M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-5 h-5")}
-            Smart Worksheet Generator
+            {tr("worksheets.title")}
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">AI-powered, MSCERT-aligned worksheet creation</p>
+          <p className="text-sm text-slate-500 mt-0.5">{tr("worksheets.subtitle")}</p>
         </div>
         <div className="flex bg-slate-100 rounded-xl p-1">
           {(["generate", "history"] as const).map((t) => (
@@ -295,7 +297,7 @@ export default function WorksheetsPage() {
               onClick={() => setTab(t)}
               className={`py-2 px-4 rounded-lg text-sm font-semibold transition cursor-pointer ${tab === t ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
             >
-              {t === "generate" ? "Generate" : "History"}
+              {t === "generate" ? tr("worksheets.generate") : tr("worksheets.history")}
             </button>
           ))}
         </div>
@@ -317,48 +319,48 @@ export default function WorksheetsPage() {
             <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
               <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
                 {svgIcon("M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4")}
-                Configuration
+                {tr("worksheets.configuration")}
               </h2>
 
               {/* Class */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Class *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.classLabel")} *</label>
                 <select
                   value={classNum}
                   onChange={(e) => setClassNum(Number(e.target.value))}
                   className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300/50 focus:border-violet-400 cursor-pointer bg-slate-50"
                 >
-                  <option value={0}>Select Class</option>
+                  <option value={0}>{tr("worksheets.selectClass")}</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((c) => (
-                    <option key={c} value={c}>Class {c}</option>
+                    <option key={c} value={c}>{tGrade(String(c))}</option>
                   ))}
                 </select>
               </div>
 
               {/* Subject */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Subject *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.subjectLabel")} *</label>
                 <select
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   disabled={subjects.length === 0}
                   className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300/50 focus:border-violet-400 cursor-pointer bg-slate-50 disabled:opacity-50"
                 >
-                  <option value="">Select Subject</option>
+                  <option value="">{tr("worksheets.selectSubject")}</option>
                   {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
 
               {/* Chapter */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Chapter *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.chapterLabel")} *</label>
                 <select
                   value={chapter}
                   onChange={(e) => setChapter(e.target.value)}
                   disabled={chapters.length === 0}
                   className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300/50 focus:border-violet-400 cursor-pointer bg-slate-50 disabled:opacity-50"
                 >
-                  <option value="">Select Chapter</option>
+                  <option value="">{tr("worksheets.selectChapter")}</option>
                   {chapters.map((c) => (
                     <option key={c.number} value={c.name}>Ch {c.number}: {c.name}</option>
                   ))}
@@ -367,21 +369,21 @@ export default function WorksheetsPage() {
 
               {/* Topic (optional) */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Topic <span className="text-slate-400 font-normal">(optional)</span></label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.topicLabel")} <span className="text-slate-400 font-normal">({tr("worksheets.optional")})</span></label>
                 <select
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   disabled={topics.length === 0}
                   className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-300/50 focus:border-violet-400 cursor-pointer bg-slate-50 disabled:opacity-50"
                 >
-                  <option value="">All Topics</option>
+                  <option value="">{tr("worksheets.allTopics")}</option>
                   {topics.map((t) => <option key={t.name} value={t.name}>{t.name}</option>)}
                 </select>
               </div>
 
               {/* Difficulty */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Difficulty *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.difficultyLabel")} *</label>
                 <div className="flex gap-2">
                   {["Easy", "Medium", "Hard"].map((d) => (
                     <button
@@ -403,7 +405,7 @@ export default function WorksheetsPage() {
 
               {/* Question Types */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Question Types *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.questionTypes")} *</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {QUESTION_TYPES.map(({ value, label }) => (
                     <button
@@ -424,7 +426,7 @@ export default function WorksheetsPage() {
 
               {/* Number of Questions */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Number of Questions</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.numQuestions")}</label>
                 <div className="flex gap-1.5">
                   {[5, 10, 15, 20].map((n) => (
                     <button
@@ -440,7 +442,7 @@ export default function WorksheetsPage() {
 
               {/* Language */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Language</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.language")}</label>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
@@ -461,7 +463,7 @@ export default function WorksheetsPage() {
                   onChange={(e) => setIncludeAnswerKey(e.target.checked)}
                   className="rounded border-slate-300 cursor-pointer"
                 />
-                <label className="text-xs text-slate-600">Include answer key in PDF</label>
+                <label className="text-xs text-slate-600">{tr("worksheets.includeAnswerKey")}</label>
               </div>
 
               {/* Generate Button */}
@@ -476,12 +478,12 @@ export default function WorksheetsPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Generating with AI...
+                    {tr("worksheets.generatingAI")}
                   </>
                 ) : (
                   <>
                     {svgIcon("M13 10V3L4 14h7v7l9-11h-7z")}
-                    Generate Worksheet
+                    {tr("worksheets.generateWorksheet")}
                   </>
                 )}
               </button>
@@ -497,8 +499,8 @@ export default function WorksheetsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">Generating Your Worksheet</h3>
-                <p className="text-sm text-slate-500 mb-4">AI is creating curriculum-accurate questions...</p>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">{tr("worksheets.generatingTitle")}</h3>
+                <p className="text-sm text-slate-500 mb-4">{tr("worksheets.generatingSubtitle")}</p>
                 <div className="flex items-center justify-center gap-1">
                   {[0, 1, 2].map((i) => (
                     <div key={i} className="w-2 h-2 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -538,7 +540,7 @@ export default function WorksheetsPage() {
                     className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${showAnswers ? "bg-violet-100 text-violet-700" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"}`}
                   >
                     {svgIcon(showAnswers ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0z", "w-3.5 h-3.5")}
-                    {showAnswers ? "Hide Answers" : "Show Answers"}
+                    {showAnswers ? tr("worksheets.hideAnswers") : tr("worksheets.showAnswers")}
                   </button>
                   <button
                     onClick={handleDownloadPDF}
@@ -551,21 +553,21 @@ export default function WorksheetsPage() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
                     ) : svgIcon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-3.5 h-3.5")}
-                    {downloading ? "Generating PDF..." : "Download PDF"}
+                    {downloading ? tr("worksheets.generatingPDF") : tr("worksheets.downloadPDF")}
                   </button>
                   <button
                     onClick={() => { setWorksheet(null); setMessage(null); }}
                     className="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer flex items-center gap-1.5"
                   >
                     {svgIcon("M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15", "w-3.5 h-3.5")}
-                    New Worksheet
+                    {tr("worksheets.newWorksheet")}
                   </button>
                 </div>
 
                 {/* Instructions */}
                 {worksheet.instructions && (
                   <div className="mx-6 mt-4 p-3 rounded-xl bg-violet-50 border border-violet-100 text-xs text-violet-700">
-                    <strong>Instructions:</strong> {worksheet.instructions}
+                    <strong>{tr("worksheets.instructions")}:</strong> {worksheet.instructions}
                   </div>
                 )}
 
@@ -625,7 +627,7 @@ export default function WorksheetsPage() {
                       {showAnswers && (
                         <div className="ml-9 mt-2 p-2 rounded-lg bg-emerald-50 border border-emerald-100">
                           {q.type !== "mcq" && q.type !== "true_false" && q.type !== "match_the_following" && (
-                            <p className="text-xs text-emerald-700"><strong>Answer:</strong> {String(q.answer)}</p>
+                            <p className="text-xs text-emerald-700"><strong>{tr("worksheets.answer")}:</strong> {String(q.answer)}</p>
                           )}
                           {q.explanation && (
                             <p className="text-[11px] text-emerald-600 mt-1"><em>{q.explanation}</em></p>
@@ -642,14 +644,14 @@ export default function WorksheetsPage() {
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mx-auto mb-5">
                   {svgIcon("M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-10 h-10 text-violet-500")}
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">Create Your Worksheet</h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">{tr("worksheets.createTitle")}</h3>
                 <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
-                  Select class, subject, and chapter from the MSCERT syllabus, choose your preferences, and let AI generate a curriculum-aligned worksheet.
+                  {tr("worksheets.createSubtitle")}
                 </p>
                 <div className="flex items-center justify-center gap-6 text-xs text-slate-400">
-                  <span className="flex items-center gap-1.5">{svgIcon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} MSCERT Aligned</span>
-                  <span className="flex items-center gap-1.5">{svgIcon("M13 10V3L4 14h7v7l9-11h-7z", "w-4 h-4")} AI Powered</span>
-                  <span className="flex items-center gap-1.5">{svgIcon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-4 h-4")} PDF Export</span>
+                  <span className="flex items-center gap-1.5">{svgIcon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} {tr("worksheets.mscertAligned")}</span>
+                  <span className="flex items-center gap-1.5">{svgIcon("M13 10V3L4 14h7v7l9-11h-7z", "w-4 h-4")} {tr("worksheets.aiPowered")}</span>
+                  <span className="flex items-center gap-1.5">{svgIcon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-4 h-4")} {tr("worksheets.pdfExport")}</span>
                 </div>
               </div>
             )}
@@ -660,10 +662,10 @@ export default function WorksheetsPage() {
         <div>
           {selectedHistory.size > 0 && (
             <div className="mb-4 flex items-center gap-3">
-              <span className="text-sm text-slate-600 font-medium">{selectedHistory.size} selected</span>
+              <span className="text-sm text-slate-600 font-medium">{selectedHistory.size} {tr("worksheets.selected")}</span>
               <button onClick={handleDeleteHistory} className="py-1.5 px-3 rounded-lg text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 transition cursor-pointer flex items-center gap-1.5">
                 {svgIcon("M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")}
-                Delete
+                {tr("common.delete")}
               </button>
             </div>
           )}
@@ -674,13 +676,13 @@ export default function WorksheetsPage() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Loading history...
+              {tr("common.loading")}...
             </div>
           ) : history.length === 0 ? (
             <div className="bg-white rounded-xl shadow-sm border border-slate-100 py-16 text-center">
               {svgIcon("M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", "w-12 h-12 text-slate-300 mx-auto mb-3")}
-              <p className="text-slate-500 font-medium">No worksheets generated yet</p>
-              <p className="text-slate-400 text-xs mt-1">Switch to the Generate tab to create your first worksheet</p>
+              <p className="text-slate-500 font-medium">{tr("worksheets.noHistory")}</p>
+              <p className="text-slate-400 text-xs mt-1">{tr("worksheets.noHistoryHint")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -715,7 +717,7 @@ export default function WorksheetsPage() {
                     onClick={() => loadWorksheetFromHistory(h._id)}
                     className="py-1.5 px-3 rounded-lg text-xs font-semibold text-violet-700 bg-violet-50 hover:bg-violet-100 transition cursor-pointer shrink-0"
                   >
-                    View
+                    {tr("common.view")}
                   </button>
                 </div>
               ))}

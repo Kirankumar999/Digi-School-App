@@ -35,10 +35,19 @@ RULES:
 4. percentage = (marksObtained/totalMarks)*100, 1 decimal. Be encouraging — these are school children.
 5. Unclear answers: studentAnswer="[Unclear handwriting]", 0 marks. Distribute totalMarks (${req.totalMarks}) across questions.
 
-JSON SCHEMA:
-{"testName":"string","subject":"string","totalMarks":number,"marksObtained":number,"percentage":number,"grade":"A+|A|B+|B|C|D|F","questions":[{"questionNumber":number,"questionText":"string","studentAnswer":"string","correctAnswer":"string","marksAwarded":number,"maxMarks":number,"feedback":"string","isCorrect":boolean}],"overallFeedback":"string","strengths":["string"],"areasToImprove":["string"]}
+ALL of these fields are REQUIRED:
+- "testName": string
+- "subject": string
+- "totalMarks": number
+- "marksObtained": number (sum of all marksAwarded)
+- "percentage": number (1 decimal)
+- "grade": one of "A+", "A", "B+", "B", "C", "D", "F"
+- "questions": array of objects, each with: "questionNumber" (number), "questionText" (string), "studentAnswer" (string), "correctAnswer" (string), "marksAwarded" (number), "maxMarks" (number), "feedback" (string), "isCorrect" (boolean)
+- "overallFeedback": string (2-3 sentences)
+- "strengths": array of strings
+- "areasToImprove": array of strings
 
-Output pure JSON:`;
+Output ONLY the JSON object, nothing else:`;
 }
 
 export function buildEvaluationRetryPrompt(original: string, error: string): string {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, FormEvent } from "react";
 import { ClassProfile } from "@/components/ClassProfile";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 
 interface ClassItem {
   _id: string;
@@ -37,6 +38,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function ClassesPage() {
+  const { t, tGrade } = useLocale();
   const [classes, setClasses] = useState<ClassItem[]>([]);
   const [pagination, setPagination] = useState<Pagination>({ total: 0, page: 1, limit: 20, totalPages: 0 });
   const [loading, setLoading] = useState(true);
@@ -110,9 +112,9 @@ export default function ClassesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Class Management</h1>
+          <h1 className="text-xl font-bold text-slate-800">{t("classes.title")}</h1>
           <p className="text-sm text-slate-500 mt-0.5">
-            {pagination.total} total class{pagination.total !== 1 ? "es" : ""}
+            {pagination.total} {t("classes.totalClasses")}
           </p>
         </div>
         <button
@@ -122,7 +124,7 @@ export default function ClassesPage() {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add Class
+          {t("classes.addClass")}
         </button>
       </div>
 
@@ -150,12 +152,12 @@ export default function ClassesPage() {
             className="flex-1 min-w-[200px] px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-300/50 focus:border-amber-400"
           />
           <select value={gradeFilter} onChange={(e) => setGradeFilter(e.target.value)} className="px-3 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-300/50 cursor-pointer">
-            <option value="">All Grades</option>
-            {["1","2","3","4","5","6","7","8","9","10","11","12"].map((g) => <option key={g} value={g}>{g}</option>)}
+            <option value="">{t("common.all")} {t("common.grade")}</option>
+            {["1","2","3","4","5","6","7","8","9","10"].map((g) => <option key={g} value={g}>{tGrade(g)}</option>)}
           </select>
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:outline-none focus:ring-2 focus:ring-amber-300/50 cursor-pointer">
-            <option value="">All Status</option>
-            {["Active", "Inactive", "Completed"].map((s) => <option key={s} value={s}>{s}</option>)}
+            <option value="">{t("common.all")} {t("common.status")}</option>
+            {["Active", "Inactive", "Completed"].map((s) => <option key={s} value={s}>{s === "Completed" ? t("classes.completed") : t(`studentStatus.${s}`)}</option>)}
           </select>
           {selected.size > 0 && (
             <button onClick={handleDelete} className="px-4 py-2.5 text-sm font-semibold text-rose-600 bg-rose-50 rounded-xl hover:bg-rose-100 transition cursor-pointer flex items-center gap-2">

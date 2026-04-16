@@ -5,10 +5,8 @@ const nextConfig: NextConfig = {
     "ioredis",
     "puppeteer-core",
     "@anthropic-ai/sdk",
+    "@google/genai",
   ],
-  turbopack: {
-    root: "/Users/kirankumarbhalekar/Desktop/Digital_School_App/Digi-School-App",
-  },
 };
 
 export default nextConfig;

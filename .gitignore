@@ -30,7 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files (secrets)
 .env*
 !.env.example
 
@@ -46,5 +46,12 @@ next-env.d.ts
 /storage/
 
 # duplicate lock files
-package-lock 2.json
-package-lock 3.json
+package-lock\ *.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+ehthumbs.db

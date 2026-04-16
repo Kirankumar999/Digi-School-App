@@ -2,10 +2,12 @@
 
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import Link from "next/link";
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,27 +36,29 @@ export default function LoginPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-sky blur-3xl" />
         </div>
         <div className="relative z-10 text-center px-12 max-w-lg">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal to-emerald flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-teal/30">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+          <div className="w-28 h-28 rounded-2xl bg-white flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-black/20 p-2">
+            <img
+              src="/logo.svg"
+              alt="DigiSchool"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">DigiSchool</h1>
+          <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">{t("app.name")}</h1>
           <p className="text-slate-300 text-lg leading-relaxed">
-            Comprehensive school administration portal for managing students, teachers, classes, and performance metrics.
+            {t("app.description")}
           </p>
           <div className="mt-10 flex items-center justify-center gap-6 text-slate-400 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-teal" />
-              Student Tracking
+              {t("auth.studentTracking")}
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald" />
-              Performance Analytics
+              {t("auth.performanceAnalytics")}
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-sky" />
-              AI Features
+              {t("auth.aiFeatures")}
             </div>
           </div>
         </div>
@@ -65,17 +69,17 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-emerald flex items-center justify-center shadow-lg">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <span className="text-2xl font-extrabold text-navy tracking-tight">DigiSchool</span>
+            <img
+              src="/logo.svg"
+              alt="DigiSchool"
+              className="w-12 h-12 rounded-xl object-contain shadow-lg"
+            />
+            <span className="text-2xl font-extrabold text-navy tracking-tight">{t("app.name")}</span>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-800">Welcome back</h2>
-            <p className="text-slate-500 mt-1">Sign in to your account to continue</p>
+            <h2 className="text-2xl font-bold text-slate-800">{t("auth.loginTitle")}</h2>
+            <p className="text-slate-500 mt-1">{t("auth.loginSubtitle")}</p>
           </div>
 
           {error && (
@@ -90,7 +94,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -112,7 +116,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
-                Password
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -159,18 +163,18 @@ export default function LoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Signing in...
+                  {t("auth.signingIn")}
                 </span>
               ) : (
-                "Sign In"
+                t("auth.login")
               )}
             </button>
           </form>
 
           <p className="mt-8 text-center text-sm text-slate-500">
-            Don&apos;t have an account?{" "}
+            {t("auth.noAccount")}{" "}
             <Link href="/signup" className="font-semibold text-teal hover:text-teal-dark transition">
-              Create an account
+              {t("auth.createAccount")}
             </Link>
           </p>
         </div>

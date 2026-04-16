@@ -2,10 +2,12 @@
 
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 import Link from "next/link";
 
 export default function SignupPage() {
   const { signup } = useAuth();
+  const { t } = useLocale();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,14 +49,16 @@ export default function SignupPage() {
           <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-royal blur-3xl" />
         </div>
         <div className="relative z-10 text-center px-12 max-w-lg">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal to-emerald flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-teal/30">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+          <div className="w-28 h-28 rounded-2xl bg-white flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-black/20 p-2">
+            <img
+              src="/logo.svg"
+              alt="DigiSchool"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Join DigiSchool</h1>
+          <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">{t("app.name")}</h1>
           <p className="text-slate-300 text-lg leading-relaxed">
-            Create your account and start managing your school with our powerful digital tools and AI-driven insights.
+            {t("app.description")}
           </p>
           <div className="mt-10 grid grid-cols-3 gap-4">
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
@@ -78,17 +82,17 @@ export default function SignupPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal to-emerald flex items-center justify-center shadow-lg">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <span className="text-2xl font-extrabold text-navy tracking-tight">DigiSchool</span>
+            <img
+              src="/logo.svg"
+              alt="DigiSchool"
+              className="w-12 h-12 rounded-xl object-contain shadow-lg"
+            />
+            <span className="text-2xl font-extrabold text-navy tracking-tight">{t("app.name")}</span>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-800">Create your account</h2>
-            <p className="text-slate-500 mt-1">Fill in the details below to get started</p>
+            <h2 className="text-2xl font-bold text-slate-800">{t("auth.signupTitle")}</h2>
+            <p className="text-slate-500 mt-1">{t("auth.signupSubtitle")}</p>
           </div>
 
           {error && (
@@ -103,7 +107,7 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mb-2">
-                Full Name
+                {t("auth.fullName")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -125,7 +129,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -147,7 +151,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="role" className="block text-sm font-semibold text-slate-700 mb-2">
-                Role
+                {t("auth.role")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -161,9 +165,9 @@ export default function SignupPage() {
                   onChange={(e) => setRole(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 focus:border-teal transition appearance-none cursor-pointer"
                 >
-                  <option value="admin">Admin</option>
-                  <option value="teacher">Teacher</option>
-                  <option value="student">Student</option>
+                  <option value="admin">{t("roles.admin")}</option>
+                  <option value="teacher">{t("roles.teacher")}</option>
+                  <option value="student">{t("roles.student")}</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                   <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,7 +179,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mb-2">
-                Password
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -214,7 +218,7 @@ export default function SignupPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-semibold text-slate-700 mb-2">
-                Confirm Password
+                {t("auth.confirmPassword")}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -245,18 +249,18 @@ export default function SignupPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Creating account...
+                  {t("auth.creatingAccount")}
                 </span>
               ) : (
-                "Create Account"
+                t("auth.createAccount")
               )}
             </button>
           </form>
 
           <p className="mt-8 text-center text-sm text-slate-500">
-            Already have an account?{" "}
+            {t("auth.hasAccount")}{" "}
             <Link href="/login" className="font-semibold text-teal hover:text-teal-dark transition">
-              Sign in
+              {t("auth.signInHere")}
             </Link>
           </p>
         </div>

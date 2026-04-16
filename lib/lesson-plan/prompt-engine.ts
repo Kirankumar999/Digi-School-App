@@ -56,10 +56,20 @@ RULES:
 5. Each lessonFlow phase needs: phase, duration, activity, teacherActions, studentActions, tips.
 ${req.includeReflection ? "6. Include teacherReflection with 2-3 reflective questions." : "6. Set teacherReflection to empty string."}
 
-JSON SCHEMA:
-{"title":"string","learningObjectives":["string"],"prerequisites":["string"],"materialsNeeded":["string"],"lessonFlow":[{"phase":"string","duration":"string","activity":"string","teacherActions":"string","studentActions":"string","tips":"string"}],"differentiatedInstruction":{"slowLearners":"string","advancedLearners":"string","visualLearners":"string","kinestheticLearners":"string"},"boardWork":"string","homework":"string","assessmentCriteria":["string"],"crossCurricularLinks":"string","teacherReflection":"string"}
+ALL of these fields are REQUIRED in the JSON output:
+- "title": string
+- "learningObjectives": array of strings (2-6 items)
+- "prerequisites": array of strings
+- "materialsNeeded": array of strings
+- "lessonFlow": array of objects, each with: "phase", "duration", "activity", "teacherActions", "studentActions", "tips"
+- "differentiatedInstruction": object with keys: "slowLearners", "advancedLearners", "visualLearners", "kinestheticLearners"
+- "boardWork": string
+- "homework": string (REQUIRED — specific assignment with textbook reference)
+- "assessmentCriteria": array of strings (REQUIRED — 2-8 observable criteria)
+- "crossCurricularLinks": string
+- "teacherReflection": string
 
-Output pure JSON:`;
+Output ONLY the JSON object, nothing else:`;
 }
 
 export function buildLessonPlanRetryPrompt(original: string, error: string): string {

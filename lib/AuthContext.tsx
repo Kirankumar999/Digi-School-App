@@ -54,39 +54,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string) => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      return { error: data.error };
+      if (!res.ok) {
+        return { error: data.error };
+      }
+
+      setUser(data.user);
+      router.push("/");
+      return {};
+    } catch (err) {
+      console.error("Login fetch error:", err);
+      return { error: "Unable to connect to server. Please check your connection and try again." };
     }
-
-    setUser(data.user);
-    router.push("/");
-    return {};
   };
 
   const signup = async (name: string, email: string, password: string, role?: string) => {
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, role }),
-    });
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      return { error: data.error };
+      if (!res.ok) {
+        return { error: data.error };
+      }
+
+      setUser(data.user);
+      router.push("/");
+      return {};
+    } catch (err) {
+      console.error("Signup fetch error:", err);
+      return { error: "Unable to connect to server. Please check your connection and try again." };
     }
-
-    setUser(data.user);
-    router.push("/");
-    return {};
   };
 
   const logout = async () => {

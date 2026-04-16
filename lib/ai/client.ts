@@ -1,35 +1,33 @@
+import { GoogleGenAI } from "@google/genai";
 import Anthropic from "@anthropic-ai/sdk";
 
-export type AIModel = "fast" | "standard" | "vision";
+// --- Gemini (FREE tier — used for all text generation) ---
 
-const MODEL_MAP: Record<AIModel, string> = {
-  fast: "claude-haiku-4-20250414",
-  standard: "claude-haiku-4-20250414",
-  vision: "claude-sonnet-4-20250514",
-};
+let _gemini: GoogleGenAI | null = null;
 
-const MAX_TOKENS_MAP: Record<AIModel, number> = {
-  fast: 2048,
-  standard: 3072,
-  vision: 4096,
-};
+export function getGeminiClient(): GoogleGenAI {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY not configured. Add it to your .env file.");
+  if (!_gemini) _gemini = new GoogleGenAI({ apiKey });
+  return _gemini;
+}
 
-let _client: Anthropic | null = null;
+export const GEMINI_MODEL = "gemini-2.5-flash";
 
-export function getAIClient(): Anthropic {
+// --- Anthropic (paid — used ONLY for vision/image tasks) ---
+
+let _anthropic: Anthropic | null = null;
+
+export function getAnthropicClient(): Anthropic {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not configured. Add it to your .env file.");
-  if (!_client) _client = new Anthropic({ apiKey });
-  return _client;
+  if (!_anthropic) _anthropic = new Anthropic({ apiKey });
+  return _anthropic;
 }
 
-export function getModelId(tier: AIModel): string {
-  return MODEL_MAP[tier];
-}
+export const ANTHROPIC_VISION_MODEL = "claude-sonnet-4-20250514";
 
-export function getMaxTokens(tier: AIModel): number {
-  return MAX_TOKENS_MAP[tier];
-}
+// --- Token usage tracking ---
 
 export interface TokenUsage {
   inputTokens: number;
@@ -50,9 +48,9 @@ export function logTokenUsage(usage: TokenUsage): void {
 }
 
 function estimateCost(usage: TokenUsage): number {
-  const isHaiku = usage.model.includes("haiku");
-  const inputRate = isHaiku ? 0.80 / 1_000_000 : 3.0 / 1_000_000;
-  const outputRate = isHaiku ? 4.0 / 1_000_000 : 15.0 / 1_000_000;
+  if (usage.model.includes("gemini")) return 0; // Free tier
+  const inputRate = 3.0 / 1_000_000;
+  const outputRate = 15.0 / 1_000_000;
   return usage.inputTokens * inputRate + usage.outputTokens * outputRate;
 }
 

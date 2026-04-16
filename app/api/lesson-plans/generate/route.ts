@@ -4,16 +4,10 @@ import { connectDB } from "@/lib/mongodb";
 import LessonPlan from "@/lib/models/LessonPlan";
 import { GenerateLessonPlanRequestSchema, LessonPlanAIResponseSchema } from "@/lib/lesson-plan/schema";
 import { buildLessonPlanPrompt, buildLessonPlanRetryPrompt } from "@/lib/lesson-plan/prompt-engine";
-import { buildCacheKey, getCached, setCache } from "@/lib/worksheet/cache";
-import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
-
-function extractJSON(text: string): string {
-  let cleaned = text.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
-  }
-  return cleaned;
-}
+import { getCached, setCache } from "@/lib/worksheet/cache";
+import { getGeminiClient, GEMINI_MODEL, logTokenUsage } from "@/lib/ai/client";
+import { extractJSON } from "@/lib/ai/extract-json";
+import { normalizeLessonPlan } from "@/lib/ai/normalize";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,8 +16,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    let anthropic;
-    try { anthropic = getAIClient(); } catch (e) {
+    let ai;
+    try { ai = getGeminiClient(); } catch (e) {
       return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
@@ -49,8 +43,6 @@ export async function POST(req: NextRequest) {
     }
 
     const prompt = buildLessonPlanPrompt(genReq);
-    const model = getModelId("standard");
-    const maxTokens = getMaxTokens("standard");
 
     let planData;
     let attempts = 0;
@@ -60,29 +52,27 @@ export async function POST(req: NextRequest) {
       attempts++;
       const currentPrompt = attempts === 1 ? prompt : buildLessonPlanRetryPrompt(prompt, lastError);
 
-      const response = await anthropic.messages.create({
-        model,
-        max_tokens: maxTokens,
-        messages: [{ role: "user", content: currentPrompt }],
+      const response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: currentPrompt,
+        config: {
+          responseMimeType: "application/json",
+        },
       });
 
+      const text = response.text ?? "";
+
       logTokenUsage({
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        model,
+        inputTokens: response.usageMetadata?.promptTokenCount ?? 0,
+        outputTokens: response.usageMetadata?.candidatesTokenCount ?? 0,
+        model: GEMINI_MODEL,
         feature: "lesson-plan",
         cached: attempts > 1,
       });
 
-      const content = response.content[0];
-      if (content.type !== "text") {
-        lastError = "AI returned non-text content";
-        continue;
-      }
-
       try {
-        const jsonStr = extractJSON(content.text);
-        const raw = JSON.parse(jsonStr);
+        const jsonStr = extractJSON(text);
+        const raw = normalizeLessonPlan(JSON.parse(jsonStr));
         const validated = LessonPlanAIResponseSchema.safeParse(raw);
 
         if (!validated.success) {

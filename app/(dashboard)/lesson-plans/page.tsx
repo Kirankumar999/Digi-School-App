@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useLocale } from "@/lib/i18n/LocaleContext";
 
 interface SyllabusChapter { number: number; name: string; topics: { name: string; keywords: string[] }[] }
 
@@ -76,6 +77,7 @@ const icon = (d: string, cls = "w-4 h-4") => (
 );
 
 export default function LessonPlansPage() {
+  const { t: tr, tGrade } = useLocale();
   const [tab, setTab] = useState<TabView>("generate");
 
   // Form
@@ -184,14 +186,14 @@ export default function LessonPlansPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
             {icon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-5 h-5")}
-            AI Lesson Plan Generator
+            {tr("lessonPlans.title")}
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">MSCERT-aligned, differentiated lesson plans in seconds</p>
+          <p className="text-sm text-slate-500 mt-0.5">{tr("lessonPlans.subtitle")}</p>
         </div>
         <div className="flex bg-slate-100 rounded-xl p-1">
-          {(["generate", "history"] as const).map(t => (
-            <button key={t} onClick={() => setTab(t)} className={`py-2 px-4 rounded-lg text-sm font-semibold transition cursor-pointer ${tab === t ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
-              {t === "generate" ? "Generate" : "History"}
+          {(["generate", "history"] as const).map(tb => (
+            <button key={tb} onClick={() => setTab(tb)} className={`py-2 px-4 rounded-lg text-sm font-semibold transition cursor-pointer ${tab === tb ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}>
+              {tb === "generate" ? tr("lessonPlans.generate") : tr("lessonPlans.history")}
             </button>
           ))}
         </div>
@@ -212,48 +214,48 @@ export default function LessonPlansPage() {
             <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
               <h2 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
                 {icon("M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4")}
-                Configuration
+                {tr("lessonPlans.configuration")}
               </h2>
 
               {/* Class */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Class *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.classLabel")} *</label>
                 <select value={classNum} onChange={e => setClassNum(Number(e.target.value))} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300/50 focus:border-purple-400 cursor-pointer bg-slate-50">
-                  <option value={0}>Select Class</option>
-                  {[1,2,3,4,5,6,7,8].map(c => <option key={c} value={c}>Class {c}</option>)}
+                  <option value={0}>{tr("lessonPlans.selectClass")}</option>
+                  {[1,2,3,4,5,6,7,8].map(c => <option key={c} value={c}>{tGrade(String(c))}</option>)}
                 </select>
               </div>
 
               {/* Subject */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Subject *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.subjectLabel")} *</label>
                 <select value={subject} onChange={e => setSubject(e.target.value)} disabled={!subjects.length} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300/50 cursor-pointer bg-slate-50 disabled:opacity-50">
-                  <option value="">Select Subject</option>
+                  <option value="">{tr("lessonPlans.selectSubject")}</option>
                   {subjects.map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
 
               {/* Chapter */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Chapter *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.chapterLabel")} *</label>
                 <select value={chapter} onChange={e => setChapter(e.target.value)} disabled={!chapters.length} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300/50 cursor-pointer bg-slate-50 disabled:opacity-50">
-                  <option value="">Select Chapter</option>
+                  <option value="">{tr("lessonPlans.selectChapter")}</option>
                   {chapters.map(c => <option key={c.number} value={c.name}>Ch {c.number}: {c.name}</option>)}
                 </select>
               </div>
 
               {/* Topic */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Topic <span className="text-slate-400 font-normal">(optional)</span></label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.topicLabel")} <span className="text-slate-400 font-normal">({tr("lessonPlans.optional")})</span></label>
                 <select value={topic} onChange={e => setTopic(e.target.value)} disabled={!topics.length} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300/50 cursor-pointer bg-slate-50 disabled:opacity-50">
-                  <option value="">All Topics</option>
+                  <option value="">{tr("lessonPlans.allTopics")}</option>
                   {topics.map(t => <option key={t.name}>{t.name}</option>)}
                 </select>
               </div>
 
               {/* Duration */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Duration *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.duration")} *</label>
                 <div className="space-y-1.5">
                   {DURATIONS.map(d => (
                     <button key={d} onClick={() => setDuration(d)} className={`w-full py-2 px-3 rounded-lg text-xs font-medium text-left transition cursor-pointer flex items-center gap-2 ${duration === d ? "bg-purple-100 text-purple-700 ring-1 ring-purple-300" : "bg-slate-50 text-slate-500 hover:bg-slate-100"}`}>
@@ -266,7 +268,7 @@ export default function LessonPlansPage() {
 
               {/* Teaching Method */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Teaching Method *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("lessonPlans.teachingMethod")} *</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {METHODS.map(m => (
                     <button key={m} onClick={() => setMethod(m)} className={`py-2 px-2.5 rounded-lg text-[11px] font-medium transition cursor-pointer text-left ${method === m ? "bg-purple-100 text-purple-700 ring-1 ring-purple-300" : "bg-slate-50 text-slate-500 hover:bg-slate-100"}`}>
@@ -279,7 +281,7 @@ export default function LessonPlansPage() {
 
               {/* Language */}
               <div className="mb-3">
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Language</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">{tr("worksheets.language")}</label>
                 <select value={language} onChange={e => setLanguage(e.target.value)} className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300/50 cursor-pointer bg-slate-50">
                   <option>English</option><option>Hindi</option><option>Marathi</option><option>Bilingual</option>
                 </select>
@@ -288,14 +290,14 @@ export default function LessonPlansPage() {
               {/* Reflection toggle */}
               <div className="mb-4 flex items-center gap-2">
                 <input type="checkbox" checked={includeReflection} onChange={e => setIncludeReflection(e.target.checked)} className="rounded border-slate-300 cursor-pointer" />
-                <label className="text-xs text-slate-600">Include teacher reflection section</label>
+                <label className="text-xs text-slate-600">{tr("lessonPlans.teacherReflection")}</label>
               </div>
 
               <button onClick={handleGenerate} disabled={generating || !classNum || !subject || !chapter} className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 text-white text-sm font-semibold shadow-lg shadow-purple-500/25 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2">
                 {generating ? (
-                  <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Generating Lesson Plan...</>
+                  <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>{tr("lessonPlans.generatingAI")}</>
                 ) : (
-                  <>{icon("M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z")}Generate Lesson Plan</>
+                  <>{icon("M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z")}{tr("lessonPlans.generatePlan")}</>
                 )}
               </button>
             </div>
@@ -308,8 +310,8 @@ export default function LessonPlansPage() {
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-purple-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">Crafting Your Lesson Plan</h3>
-                <p className="text-sm text-slate-500 mb-4">AI is designing a structured, differentiated lesson...</p>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">{tr("lessonPlans.generatingTitle")}</h3>
+                <p className="text-sm text-slate-500 mb-4">{tr("lessonPlans.generatingSubtitle")}</p>
                 <div className="flex items-center justify-center gap-1">{[0,1,2].map(i => <div key={i} className="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: `${i*0.15}s` }} />)}</div>
               </div>
             ) : plan ? (
@@ -334,17 +336,17 @@ export default function LessonPlansPage() {
                 <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-3 flex-wrap">
                   <button onClick={handlePDF} disabled={downloading} className="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer flex items-center gap-1.5 disabled:opacity-50">
                     {downloading ? <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg> : icon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-3.5 h-3.5")}
-                    {downloading ? "Generating..." : "Download PDF"}
+                    {downloading ? tr("worksheets.generatingPDF") : tr("worksheets.downloadPDF")}
                   </button>
                   <button onClick={() => { setPlan(null); setMsg(null); }} className="py-1.5 px-3 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 transition cursor-pointer flex items-center gap-1.5">
-                    {icon("M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15", "w-3.5 h-3.5")} New Plan
+                    {icon("M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15", "w-3.5 h-3.5")} {tr("lessonPlans.newPlan")}
                   </button>
                 </div>
 
                 <div className="p-6 space-y-6">
                   {/* Learning Objectives */}
                   <div>
-                    <h3 className="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")} Learning Objectives</h3>
+                    <h3 className="text-xs font-bold text-purple-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")} {tr("lessonPlans.learningObjectives")}</h3>
                     <div className="space-y-2">
                       {plan.learningObjectives.map((o, i) => (
                         <div key={i} className="flex items-start gap-3 bg-purple-50 rounded-lg p-3">
@@ -358,18 +360,18 @@ export default function LessonPlansPage() {
                   {/* Prerequisites & Materials */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <h3 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2 flex items-center gap-2">{icon("M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")} Prerequisites</h3>
+                      <h3 className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2 flex items-center gap-2">{icon("M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z")} {tr("lessonPlans.prerequisites")}</h3>
                       <div className="flex flex-wrap gap-1.5">{plan.prerequisites.map((p, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium border border-amber-200">{p}</span>)}</div>
                     </div>
                     <div>
-                      <h3 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-2">{icon("M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10")} Materials Needed</h3>
+                      <h3 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-2">{icon("M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10")} {tr("lessonPlans.materialsNeeded")}</h3>
                       <div className="flex flex-wrap gap-1.5">{plan.materialsNeeded.map((m, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-200">{m}</span>)}</div>
                     </div>
                   </div>
 
                   {/* Lesson Flow Timeline */}
                   <div>
-                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-4 flex items-center gap-2">{icon("M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2")} Lesson Flow</h3>
+                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-4 flex items-center gap-2">{icon("M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2")} {tr("lessonPlans.lessonFlow")}</h3>
                     <div className="space-y-4 relative">
                       <div className="absolute left-[18px] top-6 bottom-6 w-0.5 bg-slate-200" />
                       {plan.lessonFlow.map((phase, i) => (
@@ -400,24 +402,24 @@ export default function LessonPlansPage() {
 
                   {/* Differentiated Instruction */}
                   <div>
-                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z")} Differentiated Instruction</h3>
+                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z")} {tr("lessonPlans.differentiatedInstruction")}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="bg-orange-50 border border-orange-200 rounded-xl p-3"><p className="text-[10px] font-bold text-orange-600 mb-1">Slow Learners</p><p className="text-[11px] text-orange-800">{plan.differentiatedInstruction.slowLearners}</p></div>
-                      <div className="bg-green-50 border border-green-200 rounded-xl p-3"><p className="text-[10px] font-bold text-green-600 mb-1">Advanced Learners</p><p className="text-[11px] text-green-800">{plan.differentiatedInstruction.advancedLearners}</p></div>
-                      {plan.differentiatedInstruction.visualLearners && <div className="bg-blue-50 border border-blue-200 rounded-xl p-3"><p className="text-[10px] font-bold text-blue-600 mb-1">Visual Learners</p><p className="text-[11px] text-blue-800">{plan.differentiatedInstruction.visualLearners}</p></div>}
-                      {plan.differentiatedInstruction.kinestheticLearners && <div className="bg-purple-50 border border-purple-200 rounded-xl p-3"><p className="text-[10px] font-bold text-purple-600 mb-1">Kinesthetic Learners</p><p className="text-[11px] text-purple-800">{plan.differentiatedInstruction.kinestheticLearners}</p></div>}
+                      <div className="bg-orange-50 border border-orange-200 rounded-xl p-3"><p className="text-[10px] font-bold text-orange-600 mb-1">{tr("lessonPlans.slowLearners")}</p><p className="text-[11px] text-orange-800">{plan.differentiatedInstruction.slowLearners}</p></div>
+                      <div className="bg-green-50 border border-green-200 rounded-xl p-3"><p className="text-[10px] font-bold text-green-600 mb-1">{tr("lessonPlans.advancedLearners")}</p><p className="text-[11px] text-green-800">{plan.differentiatedInstruction.advancedLearners}</p></div>
+                      {plan.differentiatedInstruction.visualLearners && <div className="bg-blue-50 border border-blue-200 rounded-xl p-3"><p className="text-[10px] font-bold text-blue-600 mb-1">{tr("lessonPlans.visualLearners")}</p><p className="text-[11px] text-blue-800">{plan.differentiatedInstruction.visualLearners}</p></div>}
+                      {plan.differentiatedInstruction.kinestheticLearners && <div className="bg-purple-50 border border-purple-200 rounded-xl p-3"><p className="text-[10px] font-bold text-purple-600 mb-1">{tr("lessonPlans.kinestheticLearners")}</p><p className="text-[11px] text-purple-800">{plan.differentiatedInstruction.kinestheticLearners}</p></div>}
                     </div>
                   </div>
 
                   {/* Board Work */}
                   <div>
-                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z")} Board Work</h3>
+                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z")} {tr("lessonPlans.boardWork")}</h3>
                     <div className="bg-slate-800 text-slate-200 rounded-xl p-4 font-mono text-xs whitespace-pre-wrap leading-relaxed">{plan.boardWork}</div>
                   </div>
 
                   {/* Assessment */}
                   <div>
-                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")} Assessment Criteria</h3>
+                    <h3 className="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-2">{icon("M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")} {tr("lessonPlans.assessmentCriteria")}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {plan.assessmentCriteria.map((c, i) => (
                         <div key={i} className="flex items-start gap-2 bg-slate-50 rounded-lg p-2.5"><span className="text-emerald-500 shrink-0 mt-0.5">{icon("M5 13l4 4L19 7", "w-3.5 h-3.5")}</span><p className="text-[11px] text-slate-700">{c}</p></div>
@@ -427,14 +429,14 @@ export default function LessonPlansPage() {
 
                   {/* Homework */}
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <h3 className="text-xs font-bold text-amber-700 mb-2 flex items-center gap-2">{icon("M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")} Homework</h3>
+                    <h3 className="text-xs font-bold text-amber-700 mb-2 flex items-center gap-2">{icon("M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")} {tr("lessonPlans.homework")}</h3>
                     <p className="text-sm text-amber-800">{plan.homework}</p>
                   </div>
 
                   {/* Cross-curricular */}
                   {plan.crossCurricularLinks && (
                     <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                      <h3 className="text-xs font-bold text-emerald-700 mb-2 flex items-center gap-2">{icon("M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1")} Cross-Curricular Links</h3>
+                      <h3 className="text-xs font-bold text-emerald-700 mb-2 flex items-center gap-2">{icon("M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1")} {tr("lessonPlans.crossCurricularLinks")}</h3>
                       <p className="text-sm text-emerald-800">{plan.crossCurricularLinks}</p>
                     </div>
                   )}
@@ -442,7 +444,7 @@ export default function LessonPlansPage() {
                   {/* Teacher Reflection */}
                   {plan.teacherReflection && (
                     <div className="bg-violet-50 border border-violet-200 rounded-xl p-4">
-                      <h3 className="text-xs font-bold text-violet-700 mb-2 flex items-center gap-2">{icon("M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z")} Teacher&apos;s Reflection</h3>
+                      <h3 className="text-xs font-bold text-violet-700 mb-2 flex items-center gap-2">{icon("M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z")} {tr("lessonPlans.teacherReflection")}</h3>
                       <p className="text-sm text-violet-800 italic">{plan.teacherReflection}</p>
                     </div>
                   )}
@@ -453,12 +455,12 @@ export default function LessonPlansPage() {
                 <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center mx-auto mb-5">
                   {icon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-10 h-10 text-purple-500")}
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">Create Your Lesson Plan</h3>
-                <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">Select class, subject, chapter, pick a teaching method and duration — AI generates a complete, differentiated, MSCERT-aligned lesson plan.</p>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">{tr("lessonPlans.createTitle")}</h3>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">{tr("lessonPlans.createSubtitle")}</p>
                 <div className="flex items-center justify-center gap-6 text-xs text-slate-400">
-                  <span className="flex items-center gap-1.5">{icon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} MSCERT Aligned</span>
-                  <span className="flex items-center gap-1.5">{icon("M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", "w-4 h-4")} Differentiated</span>
-                  <span className="flex items-center gap-1.5">{icon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-4 h-4")} PDF Export</span>
+                  <span className="flex items-center gap-1.5">{icon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-4 h-4")} {tr("lessonPlans.mscertAligned")}</span>
+                  <span className="flex items-center gap-1.5">{icon("M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", "w-4 h-4")} {tr("lessonPlans.differentiatedInstruction")}</span>
+                  <span className="flex items-center gap-1.5">{icon("M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "w-4 h-4")} {tr("worksheets.pdfExport")}</span>
                 </div>
               </div>
             )}
@@ -469,9 +471,9 @@ export default function LessonPlansPage() {
         <div>
           {hSelected.size > 0 && (
             <div className="mb-4 flex items-center gap-3">
-              <span className="text-sm text-slate-600 font-medium">{hSelected.size} selected</span>
+              <span className="text-sm text-slate-600 font-medium">{hSelected.size} {tr("worksheets.selected")}</span>
               <button onClick={handleDeleteHistory} className="py-1.5 px-3 rounded-lg text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 transition cursor-pointer flex items-center gap-1.5">
-                {icon("M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")} Delete
+                {icon("M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")} {tr("common.delete")}
               </button>
             </div>
           )}
@@ -479,13 +481,13 @@ export default function LessonPlansPage() {
           {hLoading ? (
             <div className="bg-white rounded-xl shadow-sm border border-slate-100 py-16 text-center text-slate-400">
               <svg className="w-6 h-6 animate-spin mx-auto mb-2" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-              Loading...
+              {tr("common.loading")}...
             </div>
           ) : !history.length ? (
             <div className="bg-white rounded-xl shadow-sm border border-slate-100 py-16 text-center">
               {icon("M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253", "w-12 h-12 text-slate-300 mx-auto mb-3")}
-              <p className="text-slate-500 font-medium">No lesson plans yet</p>
-              <p className="text-slate-400 text-xs mt-1">Switch to Generate to create your first plan</p>
+              <p className="text-slate-500 font-medium">{tr("lessonPlans.noHistory")}</p>
+              <p className="text-slate-400 text-xs mt-1">{tr("lessonPlans.noHistoryHint")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -500,7 +502,7 @@ export default function LessonPlansPage() {
                     <p className="text-xs text-slate-500 mt-0.5">{h.subject} &middot; {h.chapter} &middot; {h.teachingMethod} &middot; {h.duration}</p>
                   </div>
                   <p className="text-[10px] text-slate-400 shrink-0">{new Date(h.createdAt).toLocaleDateString("en-IN")}</p>
-                  <button onClick={() => loadFromHistory(h._id)} className="py-1.5 px-3 rounded-lg text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 transition cursor-pointer shrink-0">View</button>
+                  <button onClick={() => loadFromHistory(h._id)} className="py-1.5 px-3 rounded-lg text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 transition cursor-pointer shrink-0">{tr("common.view")}</button>
                 </div>
               ))}
             </div>

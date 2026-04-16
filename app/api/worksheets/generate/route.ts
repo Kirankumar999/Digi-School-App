@@ -5,15 +5,9 @@ import Worksheet from "@/lib/models/Worksheet";
 import { GenerateRequestSchema, WorksheetAIResponseSchema } from "@/lib/worksheet/schema";
 import { buildPrompt, buildRetryPrompt } from "@/lib/worksheet/prompt-engine";
 import { buildCacheKey, getCached, setCache } from "@/lib/worksheet/cache";
-import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
-
-function extractJSON(text: string): string {
-  let cleaned = text.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
-  }
-  return cleaned;
-}
+import { getGeminiClient, GEMINI_MODEL, logTokenUsage } from "@/lib/ai/client";
+import { extractJSON } from "@/lib/ai/extract-json";
+import { normalizeWorksheet } from "@/lib/ai/normalize";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,8 +16,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    let anthropic;
-    try { anthropic = getAIClient(); } catch (e) {
+    let ai;
+    try { ai = getGeminiClient(); } catch (e) {
       return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
@@ -41,17 +35,14 @@ export async function POST(req: NextRequest) {
     const cachedData = await getCached(cacheKey);
 
     if (cachedData) {
-      const cachedWorksheet = JSON.parse(cachedData);
       return NextResponse.json({
         message: "Worksheet retrieved from cache",
-        worksheet: cachedWorksheet,
+        worksheet: JSON.parse(cachedData),
         cached: true,
       });
     }
 
     const prompt = buildPrompt(genReq);
-    const model = getModelId("standard");
-    const maxTokens = getMaxTokens("standard");
 
     let worksheetData;
     let attempts = 0;
@@ -61,29 +52,27 @@ export async function POST(req: NextRequest) {
       attempts++;
       const currentPrompt = attempts === 1 ? prompt : buildRetryPrompt(prompt, lastError);
 
-      const response = await anthropic.messages.create({
-        model,
-        max_tokens: maxTokens,
-        messages: [{ role: "user", content: currentPrompt }],
+      const response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: currentPrompt,
+        config: {
+          responseMimeType: "application/json",
+        },
       });
 
+      const text = response.text ?? "";
+
       logTokenUsage({
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        model,
+        inputTokens: response.usageMetadata?.promptTokenCount ?? 0,
+        outputTokens: response.usageMetadata?.candidatesTokenCount ?? 0,
+        model: GEMINI_MODEL,
         feature: "worksheet",
         cached: attempts > 1,
       });
 
-      const content = response.content[0];
-      if (content.type !== "text") {
-        lastError = "AI returned non-text content";
-        continue;
-      }
-
       try {
-        const jsonStr = extractJSON(content.text);
-        const raw = JSON.parse(jsonStr);
+        const jsonStr = extractJSON(text);
+        const raw = normalizeWorksheet(JSON.parse(jsonStr));
         const validated = WorksheetAIResponseSchema.safeParse(raw);
 
         if (!validated.success) {
@@ -111,7 +100,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to generate worksheet" }, { status: 500 });
     }
 
-    // Save to MongoDB
     await connectDB();
     const worksheetId = `WS-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
@@ -135,7 +123,6 @@ export async function POST(req: NextRequest) {
       cached: false,
     });
 
-    // Cache the result
     const cachePayload = JSON.stringify({
       _id: saved._id,
       ...worksheetData,

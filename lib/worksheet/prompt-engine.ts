@@ -62,10 +62,22 @@ RULES:
 3. true_false answer = JSON boolean. match_the_following = array of {left,right} pairs.
 4. Sequential numbering from 1. Brief explanation per question.
 
-JSON SCHEMA:
-{"title":"string","instructions":"string","questions":[{"id":number,"type":"mcq|short_answer|long_answer|fill_in_the_blank|true_false|match_the_following","question":"string","options":["string"](mcq only,4),"pairs":[{"left":"string","right":"string"}](match only),"answer":"string|boolean","explanation":"string","marks":number}],"totalMarks":number,"estimatedTime":"string"}
+ALL of these fields are REQUIRED in the JSON output:
+- "title": string (descriptive, includes class/subject/chapter)
+- "instructions": string (general instructions for students)
+- "questions": array of objects, each with:
+  - "id": number (sequential from 1)
+  - "type": one of "mcq", "short_answer", "long_answer", "fill_in_the_blank", "true_false", "match_the_following"
+  - "question": string
+  - "options": array of 4 strings (ONLY for mcq)
+  - "pairs": array of {"left":"string","right":"string"} (ONLY for match_the_following)
+  - "answer": string or boolean (boolean ONLY for true_false)
+  - "explanation": string (1-2 sentences)
+  - "marks": number
+- "totalMarks": number (sum of all marks)
+- "estimatedTime": string (e.g. "30 minutes")
 
-Output pure JSON:`;
+Output ONLY the JSON object, nothing else:`;
 }
 
 export function buildRetryPrompt(originalPrompt: string, error: string): string {

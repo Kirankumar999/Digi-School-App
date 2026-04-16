@@ -5,15 +5,9 @@ import Student from "@/lib/models/Student";
 import TestResult from "@/lib/models/TestResult";
 import { EvaluateRequestSchema, EvaluationAIResponseSchema } from "@/lib/test-evaluator/schema";
 import { buildEvaluationPrompt, buildEvaluationRetryPrompt } from "@/lib/test-evaluator/prompt-engine";
-import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
-
-function extractJSON(text: string): string {
-  let cleaned = text.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
-  }
-  return cleaned;
-}
+import { getAnthropicClient, ANTHROPIC_VISION_MODEL, logTokenUsage } from "@/lib/ai/client";
+import { extractJSON } from "@/lib/ai/extract-json";
+import { normalizeEvaluation } from "@/lib/ai/normalize";
 
 function inferMediaType(base64: string): "image/jpeg" | "image/png" | "image/gif" | "image/webp" {
   if (base64.startsWith("/9j/")) return "image/jpeg";
@@ -40,7 +34,7 @@ export async function POST(req: NextRequest) {
     }
 
     let anthropic;
-    try { anthropic = getAIClient(); } catch (e) {
+    try { anthropic = getAnthropicClient(); } catch (e) {
       return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
@@ -66,8 +60,8 @@ export async function POST(req: NextRequest) {
 
     const mediaType = inferMediaType(imageBase64);
     const prompt = buildEvaluationPrompt(evalReq);
-    const model = getModelId("vision");
-    const maxTokens = getMaxTokens("vision");
+    const model = ANTHROPIC_VISION_MODEL;
+    const maxTokens = 4096;
 
     let evalData;
     let attempts = 0;
@@ -108,7 +102,7 @@ export async function POST(req: NextRequest) {
 
       try {
         const jsonStr = extractJSON(content.text);
-        const raw = JSON.parse(jsonStr);
+        const raw = normalizeEvaluation(JSON.parse(jsonStr));
         const validated = EvaluationAIResponseSchema.safeParse(raw);
 
         if (!validated.success) {

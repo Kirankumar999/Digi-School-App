@@ -6,16 +6,10 @@ import TestResult from "@/lib/models/TestResult";
 import ReportCard from "@/lib/models/ReportCard";
 import { GenerateReportCardRequestSchema, ReportCardAIResponseSchema } from "@/lib/report-card/schema";
 import { buildReportCardPrompt, buildReportCardRetryPrompt } from "@/lib/report-card/prompt-engine";
-import { getAIClient, getModelId, getMaxTokens, logTokenUsage } from "@/lib/ai/client";
+import { getGeminiClient, GEMINI_MODEL, logTokenUsage } from "@/lib/ai/client";
+import { extractJSON } from "@/lib/ai/extract-json";
+import { normalizeReportCard } from "@/lib/ai/normalize";
 import { getCached, setCache } from "@/lib/worksheet/cache";
-
-function extractJSON(text: string): string {
-  let cleaned = text.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
-  }
-  return cleaned;
-}
 
 function calcGrade(pct: number): string {
   if (pct >= 90) return "A+";
@@ -32,8 +26,8 @@ export async function POST(req: NextRequest) {
     const user = await getAuthUser();
     if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-    let anthropic;
-    try { anthropic = getAIClient(); } catch (e) {
+    let ai;
+    try { ai = getGeminiClient(); } catch (e) {
       return NextResponse.json({ error: (e as Error).message }, { status: 500 });
     }
 
@@ -117,8 +111,6 @@ export async function POST(req: NextRequest) {
       overallGrade,
     });
 
-    const model = getModelId("fast");
-    const maxTokens = getMaxTokens("fast");
     let aiData;
     let attempts = 0;
     let lastError = "";
@@ -127,25 +119,26 @@ export async function POST(req: NextRequest) {
       attempts++;
       const currentPrompt = attempts === 1 ? prompt : buildReportCardRetryPrompt(prompt, lastError);
 
-      const response = await anthropic.messages.create({
-        model,
-        max_tokens: maxTokens,
-        messages: [{ role: "user", content: currentPrompt }],
+      const response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: currentPrompt,
+        config: {
+          responseMimeType: "application/json",
+        },
       });
 
+      const text = response.text ?? "";
+
       logTokenUsage({
-        inputTokens: response.usage.input_tokens,
-        outputTokens: response.usage.output_tokens,
-        model,
+        inputTokens: response.usageMetadata?.promptTokenCount ?? 0,
+        outputTokens: response.usageMetadata?.candidatesTokenCount ?? 0,
+        model: GEMINI_MODEL,
         feature: "report-card",
         cached: attempts > 1,
       });
 
-      const content = response.content[0];
-      if (content.type !== "text") { lastError = "Non-text response"; continue; }
-
       try {
-        const raw = JSON.parse(extractJSON(content.text));
+        const raw = normalizeReportCard(JSON.parse(extractJSON(text)));
         const validated = ReportCardAIResponseSchema.safeParse(raw);
         if (!validated.success) {
           lastError = validated.error.errors.map((e) => `${e.path.join(".")}: ${e.message}`).join("; ");
