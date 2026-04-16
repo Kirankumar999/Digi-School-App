@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Student from "@/lib/models/Student";
 import ExcelJS from "exceljs";
+import { Readable } from "stream";
 
 const EXPECTED_HEADERS = [
   "studentId",
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const workbook = new ExcelJS.Workbook();
     if (file.name.endsWith(".csv")) {
-      await workbook.csv.read(require("stream").Readable.from(buffer));
+      await workbook.csv.read(Readable.from(buffer));
     } else {
       await workbook.xlsx.load(buffer);
     }

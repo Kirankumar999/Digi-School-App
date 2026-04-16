@@ -37,7 +37,11 @@ export default function DoubtSolverPage() {
     setHistLoading(false);
   }, []);
 
-  useEffect(() => { if (view === "history") loadHistory(); }, [view, loadHistory]);
+  useEffect(() => {
+    if (view === "history") {
+      queueMicrotask(() => loadHistory());
+    }
+  }, [view, loadHistory]);
 
   const askQuestion = async () => {
     if (!question.trim()) { setMsg(t("doubtSolver.enterQuestion")); return; }

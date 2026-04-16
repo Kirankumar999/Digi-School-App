@@ -41,8 +41,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem("digischool_locale") as Locale | null;
     if (saved && translations[saved]) {
-      setLocaleState(saved);
       document.documentElement.setAttribute("data-locale", saved);
+      queueMicrotask(() => setLocaleState(saved));
     }
   }, []);
 

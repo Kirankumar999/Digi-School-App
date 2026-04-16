@@ -9,7 +9,7 @@ export function OfflineIndicator() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setOnline(navigator.onLine);
+    queueMicrotask(() => setOnline(navigator.onLine));
 
     const handleOnline = () => { setOnline(true); setShow(true); setTimeout(() => setShow(false), 3000); };
     const handleOffline = () => { setOnline(false); setShow(true); };
