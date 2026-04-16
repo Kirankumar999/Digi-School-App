@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     "puppeteer-core",
     "@anthropic-ai/sdk",
     "@google/genai",
+    "exceljs",
   ],
 };
 

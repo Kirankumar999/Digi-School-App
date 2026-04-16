@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 export async function GET() {
   const headers = [
@@ -54,17 +54,22 @@ export async function GET() {
     },
   ];
 
-  const worksheet = XLSX.utils.json_to_sheet(sampleData, { header: headers });
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Students");
 
-  const colWidths = headers.map((h) => ({
-    wch: Math.max(h.length + 2, 15),
+  worksheet.columns = headers.map((h) => ({
+    header: h,
+    key: h,
+    width: Math.max(h.length + 2, 15),
   }));
-  worksheet["!cols"] = colWidths;
 
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+  worksheet.getRow(1).font = { bold: true };
 
-  const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+  for (const row of sampleData) {
+    worksheet.addRow(row);
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
 
   return new NextResponse(buffer, {
     headers: {

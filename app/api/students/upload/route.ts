@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Student from "@/lib/models/Student";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 const EXPECTED_HEADERS = [
   "studentId",
@@ -22,6 +22,27 @@ const EXPECTED_HEADERS = [
 ];
 
 const REQUIRED_FIELDS = ["studentId", "firstName", "lastName", "grade", "section"];
+
+function parseWorksheet(worksheet: ExcelJS.Worksheet): Record<string, unknown>[] {
+  const rows: Record<string, unknown>[] = [];
+  const headerRow = worksheet.getRow(1);
+  const headers: string[] = [];
+  headerRow.eachCell((cell, colNumber) => {
+    headers[colNumber] = String(cell.value ?? "").trim();
+  });
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+    const record: Record<string, unknown> = {};
+    headers.forEach((header, colNumber) => {
+      if (header) {
+        const cell = row.getCell(colNumber);
+        record[header] = cell.value ?? "";
+      }
+    });
+    rows.push(record);
+  });
+  return rows;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,12 +71,17 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const workbook = XLSX.read(buffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const rawData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet, {
-      defval: "",
-    });
+    const workbook = new ExcelJS.Workbook();
+    if (file.name.endsWith(".csv")) {
+      await workbook.csv.read(require("stream").Readable.from(buffer));
+    } else {
+      await workbook.xlsx.load(buffer);
+    }
+    const worksheet = workbook.worksheets[0];
+    if (!worksheet) {
+      return NextResponse.json({ error: "No worksheet found in file" }, { status: 400 });
+    }
+    const rawData = parseWorksheet(worksheet);
 
     if (rawData.length === 0) {
       return NextResponse.json({ error: "The uploaded file is empty" }, { status: 400 });
