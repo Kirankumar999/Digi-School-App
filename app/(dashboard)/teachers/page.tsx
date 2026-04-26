@@ -61,10 +61,9 @@ const statusColors: Record<string, string> = {
 };
 
 const DEPARTMENTS = ["Science", "Mathematics", "Languages", "Social Studies", "Arts", "Physical Education", "Computer Science", "Administration"];
-const SUBJECTS = ["Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "History", "Geography", "Computer Science", "Physical Education", "Art", "Music"];
 
 export default function TeachersPage() {
-  const { t, tSubject, tGender, tStatus } = useLocale();
+  const { t, tSubject, tStatus } = useLocale();
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [pagination, setPagination] = useState<Pagination>({ total: 0, page: 1, limit: 20, totalPages: 0 });
   const [loading, setLoading] = useState(true);
@@ -268,6 +267,7 @@ export default function TeachersPage() {
                         title={t("teachers.updatePhoto")}
                       >
                         {tchr.profilePicture ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={tchr.profilePicture} alt={tchr.firstName} className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100" />
                         ) : (
                           <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${getGradient(tchr.firstName + tchr.lastName)} flex items-center justify-center text-white text-xs font-bold`}>

@@ -175,6 +175,7 @@ export function StudentPhotoCapture({ currentPhoto, studentName, onSave, onClose
           <div className="flex flex-col items-center">
             <div className="relative group mb-4">
               {preview ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={preview} alt="Preview" className="w-40 h-40 rounded-2xl object-cover ring-4 ring-slate-100 shadow-lg" />
               ) : (
                 <div className="w-40 h-40 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-400 text-4xl font-bold ring-4 ring-slate-100 shadow-lg">
@@ -231,6 +232,7 @@ export function StudentPhotoCapture({ currentPhoto, studentName, onSave, onClose
               </>
             ) : preview ? (
               <div className="flex flex-col items-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={preview} alt="Captured" className="w-40 h-40 rounded-2xl object-cover ring-4 ring-slate-100 shadow-lg mb-4" />
                 <button
                   onClick={() => { setPreview(""); startCamera(); }}

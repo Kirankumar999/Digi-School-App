@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Welcome back, Sarah 👋" page-crumbs="Home / Dashboard">
+
+    <!-- Banner -->
+    <div class="banner reveal">
+      <div class="ic"><i data-lucide="sparkles"></i></div>
+      <div>
+        <h3>Term 2 enrollment is now open</h3>
+        <p>You have 23 pending student applications waiting for review.</p>
+      </div>
+      <div class="actions">
+        <a class="btn-up" href="students.html">Review now <i data-lucide="arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat s1 reveal">
+        <div class="stat-icon"><i data-lucide="users"></i></div>
+        <div>
+          <div class="label">Total Students</div>
+          <div class="value"><span data-count="2847">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +12.4% this month</div>
+        </div>
+      </div>
+      <div class="stat s2 reveal">
+        <div class="stat-icon"><i data-lucide="graduation-cap"></i></div>
+        <div>
+          <div class="label">Total Teachers</div>
+          <div class="value"><span data-count="186">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +3 new hires</div>
+        </div>
+      </div>
+      <div class="stat s3 reveal">
+        <div class="stat-icon"><i data-lucide="clipboard-check"></i></div>
+        <div>
+          <div class="label">Avg. Attendance</div>
+          <div class="value"><span data-count="94.2" data-decimals="1" data-suffix="%">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +1.2% vs last week</div>
+        </div>
+      </div>
+      <div class="stat s4 reveal">
+        <div class="stat-icon"><i data-lucide="credit-card"></i></div>
+        <div>
+          <div class="label">Fees Collected</div>
+          <div class="value"><span data-count="184320" data-prefix="$">0</span></div>
+          <div class="delta"><i data-lucide="arrow-down-right"></i> 8 pending invoices</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+      <div class="card reveal">
+        <div class="card-head">
+          <div>
+            <h3>Academic Performance</h3>
+            <p class="text-mute mt-4">Average score across grades — Term 2</p>
+          </div>
+          <div class="tabs">
+            <button class="tab active">Week</button>
+            <button class="tab">Month</button>
+            <button class="tab">Term</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="perfChart"></canvas></div>
+        <div class="chart-legend mt-12">
+          <span><i style="background:var(--brand-1)"></i> Mathematics</span>
+          <span><i style="background:var(--brand-3)"></i> Science</span>
+          <span><i style="background:var(--brand-4)"></i> English</span>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head">
+          <h3>Attendance Overview</h3>
+          <a class="more" href="attendance.html">View all</a>
+        </div>
+        <div class="chart-wrap" style="height:220px;"><canvas id="attChart"></canvas></div>
+        <div class="flex between mt-16">
+          <div>
+            <div class="text-mute tiny">Present</div>
+            <div style="font-weight:700; font-size:18px;">2,683</div>
+          </div>
+          <div>
+            <div class="text-mute tiny">Absent</div>
+            <div style="font-weight:700; font-size:18px; color:var(--danger);">102</div>
+          </div>
+          <div>
+            <div class="text-mute tiny">Late</div>
+            <div style="font-weight:700; font-size:18px; color:var(--warning);">62</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: Schedule + Activity -->
+    <div class="row">
+      <div class="card reveal">
+        <div class="card-head">
+          <div>
+            <h3>Today's Schedule</h3>
+            <p class="text-mute mt-4">Wednesday, April 19 • 6 classes</p>
+          </div>
+          <a class="btn btn-ghost" href="timetable.html"><i data-lucide="calendar-days"></i> Full timetable</a>
+        </div>
+
+        <div class="flex-col gap-12">
+          <div class="flex gap-12 center" style="padding:12px; border-radius:14px; background:var(--surface-2);">
+            <div class="avatar g1" style="width:44px;height:44px;border-radius:12px;">M</div>
+            <div style="flex:1">
+              <div style="font-weight:600;">Mathematics — Grade 10A</div>
+              <div class="text-mute tiny">Mr. Anderson • Room 204</div>
+            </div>
+            <div class="pill brand">08:00 - 09:00</div>
+          </div>
+          <div class="flex gap-12 center" style="padding:12px; border-radius:14px; background:var(--surface-2);">
+            <div class="avatar g3" style="width:44px;height:44px;border-radius:12px;">S</div>
+            <div style="flex:1">
+              <div style="font-weight:600;">Science — Grade 9B</div>
+              <div class="text-mute tiny">Dr. Patel • Lab 1</div>
+            </div>
+            <div class="pill warning">09:15 - 10:15</div>
+          </div>
+          <div class="flex gap-12 center" style="padding:12px; border-radius:14px; background:var(--surface-2);">
+            <div class="avatar g6" style="width:44px;height:44px;border-radius:12px;">E</div>
+            <div style="flex:1">
+              <div style="font-weight:600;">English Literature — Grade 11</div>
+              <div class="text-mute tiny">Ms. Reyes • Room 102</div>
+            </div>
+            <div class="pill info">10:30 - 11:30</div>
+          </div>
+          <div class="flex gap-12 center" style="padding:12px; border-radius:14px; background:var(--surface-2);">
+            <div class="avatar g4" style="width:44px;height:44px;border-radius:12px;">P</div>
+            <div style="flex:1">
+              <div style="font-weight:600;">Physical Education — Grade 8</div>
+              <div class="text-mute tiny">Coach Williams • Field A</div>
+            </div>
+            <div class="pill success">13:00 - 14:00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head">
+          <h3>Recent Activity</h3>
+          <a class="more" href="#">See all</a>
+        </div>
+        <div class="activity">
+          <div class="activity-item">
+            <div class="activity-dot b"><i data-lucide="user-plus"></i></div>
+            <div>
+              <div class="activity-text"><b>Alex Thompson</b> enrolled into Grade 9B</div>
+              <div class="activity-time">2 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot s"><i data-lucide="check-circle-2"></i></div>
+            <div>
+              <div class="activity-text">Math Quiz results published for <b>Grade 10A</b></div>
+              <div class="activity-time">28 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot w"><i data-lucide="bell"></i></div>
+            <div>
+              <div class="activity-text">Parent meeting scheduled with <b>5 families</b></div>
+              <div class="activity-time">1 hour ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot c"><i data-lucide="credit-card"></i></div>
+            <div>
+              <div class="activity-text">Fee payment received from <b>Mia Carter</b></div>
+              <div class="activity-time">3 hours ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot b"><i data-lucide="book-open"></i></div>
+            <div>
+              <div class="activity-text">New assignment posted in <b>English Literature</b></div>
+              <div class="activity-time">5 hours ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row: Top students + Upcoming events -->
+    <div class="row">
+      <div class="card reveal">
+        <div class="card-head">
+          <h3>Top Performing Students</h3>
+          <a class="more" href="grades.html">View all</a>
+        </div>
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Student</th><th>Grade</th><th>GPA</th><th>Progress</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cell-user"><div class="avatar g1">EL</div><div><div style="font-weight:600;">Emma Lawson</div><div class="text-mute tiny">emma.l@school.edu</div></div></div></td>
+                <td>10A</td><td><b>3.98</b></td>
+                <td style="min-width:160px;"><div class="progress"><span style="width:96%"></span></div></td>
+                <td><span class="pill success">Excellent</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><div class="avatar g3">JK</div><div><div style="font-weight:600;">James Kim</div><div class="text-mute tiny">james.k@school.edu</div></div></div></td>
+                <td>11B</td><td><b>3.92</b></td>
+                <td><div class="progress"><span style="width:92%"></span></div></td>
+                <td><span class="pill success">Excellent</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><div class="avatar g6">SO</div><div><div style="font-weight:600;">Sofia Ortega</div><div class="text-mute tiny">sofia.o@school.edu</div></div></div></td>
+                <td>9A</td><td><b>3.85</b></td>
+                <td><div class="progress"><span style="width:88%"></span></div></td>
+                <td><span class="pill brand">Great</span></td>
+              </tr>
+              <tr>
+                <td><div class="cell-user"><div class="avatar g4">RP</div><div><div style="font-weight:600;">Rahul Patel</div><div class="text-mute tiny">rahul.p@school.edu</div></div></div></td>
+                <td>12C</td><td><b>3.79</b></td>
+                <td><div class="progress"><span style="width:84%"></span></div></td>
+                <td><span class="pill brand">Great</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head">
+          <h3>Upcoming Events</h3>
+          <a class="more" href="#">Calendar</a>
+        </div>
+        <div class="flex-col gap-12">
+          <div style="padding:14px; border-radius:14px; background:var(--surface-2); border-left:4px solid var(--brand-1);">
+            <div class="flex between center">
+              <strong>Annual Sports Day</strong>
+              <span class="pill brand">Apr 24</span>
+            </div>
+            <div class="text-mute tiny mt-4">All grades • Main grounds • 8:00 AM</div>
+          </div>
+          <div style="padding:14px; border-radius:14px; background:var(--surface-2); border-left:4px solid var(--brand-3);">
+            <div class="flex between center">
+              <strong>Parent–Teacher Meet</strong>
+              <span class="pill warning">Apr 26</span>
+            </div>
+            <div class="text-mute tiny mt-4">Grades 9–12 • Auditorium • 10:00 AM</div>
+          </div>
+          <div style="padding:14px; border-radius:14px; background:var(--surface-2); border-left:4px solid var(--brand-4);">
+            <div class="flex between center">
+              <strong>Science Exhibition</strong>
+              <span class="pill info">May 02</span>
+            </div>
+            <div class="text-mute tiny mt-4">All students • Science block</div>
+          </div>
+          <div style="padding:14px; border-radius:14px; background:var(--surface-2); border-left:4px solid var(--success);">
+            <div class="flex between center">
+              <strong>Term 2 Begin</strong>
+              <span class="pill success">May 06</span>
+            </div>
+            <div class="text-mute tiny mt-4">Academic calendar resumes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let perfChart, attChart;
+    function buildCharts() {
+      const c = window.__themeColors();
+      const ctx1 = document.getElementById("perfChart");
+      const ctx2 = document.getElementById("attChart");
+      const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+      const grad = (ctx, color) => {
+        const g = ctx.createLinearGradient(0, 0, 0, 280);
+        g.addColorStop(0, color + "55");
+        g.addColorStop(1, color + "00");
+        return g;
+      };
+
+      if (perfChart) perfChart.destroy();
+      perfChart = new Chart(ctx1, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            { label: "Math",    data: [78,82,85,80,88,90,86], borderColor: c.brand1, backgroundColor: grad(ctx1.getContext("2d"), c.brand1), tension: .4, fill: true, borderWidth: 3, pointRadius: 0, pointHoverRadius: 6 },
+            { label: "Science", data: [70,74,78,82,80,84,87], borderColor: c.brand3, backgroundColor: grad(ctx1.getContext("2d"), c.brand3), tension: .4, fill: true, borderWidth: 3, pointRadius: 0, pointHoverRadius: 6 },
+            { label: "English", data: [82,80,84,86,82,85,88], borderColor: c.brand4, backgroundColor: grad(ctx1.getContext("2d"), c.brand4), tension: .4, fill: true, borderWidth: 3, pointRadius: 0, pointHoverRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { mode: "index", intersect: false } },
+          interaction: { mode: "nearest", intersect: false },
+          scales: {
+            x: { grid: { color: c.grid }, ticks: { color: c.mute } },
+            y: { grid: { color: c.grid }, ticks: { color: c.mute }, suggestedMin: 60, suggestedMax: 100 }
+          }
+        }
+      });
+
+      if (attChart) attChart.destroy();
+      attChart = new Chart(ctx2, {
+        type: "doughnut",
+        data: {
+          labels: ["Present", "Absent", "Late"],
+          datasets: [{
+            data: [2683, 102, 62],
+            backgroundColor: [c.success, c.danger, c.warning],
+            borderWidth: 0,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          cutout: "70%",
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+    window.__rebuildCharts = buildCharts;
+    window.addEventListener("load", () => { lucide.createIcons(); buildCharts(); });
+  </script>
+</body>
+</html>

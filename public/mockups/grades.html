@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grades — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Grades & Reports" page-crumbs="Home / Academics / Grades">
+
+    <div class="stats-grid">
+      <div class="stat s1 reveal">
+        <div class="stat-icon"><i data-lucide="award"></i></div>
+        <div>
+          <div class="label">Class Average</div>
+          <div class="value"><span data-count="84.6" data-decimals="1" data-suffix="%">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +2.3% vs last term</div>
+        </div>
+      </div>
+      <div class="stat s2 reveal">
+        <div class="stat-icon"><i data-lucide="medal"></i></div>
+        <div>
+          <div class="label">Honor Roll</div>
+          <div class="value"><span data-count="412">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> 14.5% of students</div>
+        </div>
+      </div>
+      <div class="stat s3 reveal">
+        <div class="stat-icon"><i data-lucide="alert-triangle"></i></div>
+        <div>
+          <div class="label">Need Support</div>
+          <div class="value"><span data-count="48">0</span></div>
+          <div class="delta"><i data-lucide="user-cog"></i> Tutor assigned</div>
+        </div>
+      </div>
+      <div class="stat s4 reveal">
+        <div class="stat-icon"><i data-lucide="check-check"></i></div>
+        <div>
+          <div class="label">Reports Sent</div>
+          <div class="value"><span data-count="2789">0</span></div>
+          <div class="delta"><i data-lucide="mail"></i> 98% delivered</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card reveal">
+        <div class="card-head">
+          <div>
+            <h3>Subject-wise Performance</h3>
+            <p class="text-mute mt-4">Grade 10A • Term 2 average</p>
+          </div>
+          <div class="tabs">
+            <button class="tab">10A</button>
+            <button class="tab active">10B</button>
+            <button class="tab">11A</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="subChart"></canvas></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head">
+          <h3>Grade Distribution</h3>
+          <a class="more" href="#">Details</a>
+        </div>
+        <div class="chart-wrap" style="height:240px;"><canvas id="gradeChart"></canvas></div>
+        <div class="flex-col gap-8 mt-12">
+          <div class="flex between"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--success);margin-right:8px;"></i>A (90-100)</span><b>682</b></div>
+          <div class="flex between"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--brand-1);margin-right:8px;"></i>B (80-89)</span><b>1,034</b></div>
+          <div class="flex between"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--brand-4);margin-right:8px;"></i>C (70-79)</span><b>768</b></div>
+          <div class="flex between"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--warning);margin-right:8px;"></i>D (60-69)</span><b>315</b></div>
+          <div class="flex between"><span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--danger);margin-right:8px;"></i>F (&lt;60)</span><b>48</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-head">
+        <div>
+          <h3>Recent Examinations</h3>
+          <p class="text-mute mt-4">Latest results published in the last 30 days</p>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost"><i data-lucide="filter"></i> Filter</button>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> New Exam</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Examination</th><th>Subject</th><th>Class</th>
+              <th>Date</th><th>Avg Score</th><th>Highest</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Mid-term Exam</b></td>
+              <td>Mathematics</td><td>10A</td><td>Apr 15, 2026</td>
+              <td><span class="pill success">87.4%</span></td>
+              <td>98 — Emma L.</td>
+              <td><span class="pill success">Published</span></td>
+              <td><button class="icon-btn"><i data-lucide="eye"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>Lab Practical</b></td>
+              <td>Physics</td><td>10A</td><td>Apr 12, 2026</td>
+              <td><span class="pill brand">82.1%</span></td>
+              <td>95 — James K.</td>
+              <td><span class="pill success">Published</span></td>
+              <td><button class="icon-btn"><i data-lucide="eye"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>Essay Assignment</b></td>
+              <td>English Lit</td><td>11B</td><td>Apr 10, 2026</td>
+              <td><span class="pill success">88.6%</span></td>
+              <td>97 — Lily B.</td>
+              <td><span class="pill warning">Grading</span></td>
+              <td><button class="icon-btn"><i data-lucide="eye"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>Coding Challenge</b></td>
+              <td>Computer Science</td><td>12C</td><td>Apr 08, 2026</td>
+              <td><span class="pill brand">79.3%</span></td>
+              <td>96 — Rahul P.</td>
+              <td><span class="pill success">Published</span></td>
+              <td><button class="icon-btn"><i data-lucide="eye"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>History Quiz</b></td>
+              <td>World History</td><td>10A</td><td>Apr 05, 2026</td>
+              <td><span class="pill warning">71.2%</span></td>
+              <td>94 — Sofia O.</td>
+              <td><span class="pill info">Draft</span></td>
+              <td><button class="icon-btn"><i data-lucide="eye"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function build() {
+      const c = window.__themeColors();
+      new Chart(document.getElementById("subChart"), {
+        type: "bar",
+        data: {
+          labels: ["Math","Science","English","History","CS","Spanish","P.E.","Art"],
+          datasets: [{
+            label: "Average %",
+            data: [88, 82, 86, 75, 91, 79, 94, 89],
+            backgroundColor: [c.brand1, c.brand2, c.brand3, c.brand4, c.success, c.warning, c.info, "#a78bfa"],
+            borderRadius: 10,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: c.mute } },
+            y: { grid: { color: c.grid }, ticks: { color: c.mute }, suggestedMin: 50, suggestedMax: 100 }
+          }
+        }
+      });
+
+      new Chart(document.getElementById("gradeChart"), {
+        type: "polarArea",
+        data: {
+          labels: ["A","B","C","D","F"],
+          datasets: [{
+            data: [682, 1034, 768, 315, 48],
+            backgroundColor: [c.success+"cc", c.brand1+"cc", c.brand4+"cc", c.warning+"cc", c.danger+"cc"],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { r: { ticks: { display: false }, grid: { color: c.grid } } }
+        }
+      });
+    }
+    window.__rebuildCharts = () => { location.reload(); };
+    window.addEventListener("load", () => { lucide.createIcons(); build(); });
+  </script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -19,14 +20,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "var(--bg)" }}
+      >
         <div className="flex flex-col items-center gap-4">
-          <img
-            src="/logo.svg"
-            alt="DigiSchool"
-            className="w-14 h-14 rounded-xl object-contain shadow-lg animate-pulse"
-          />
-          <p className="text-slate-500 text-sm font-medium">Loading DigiSchool...</p>
+          <div className="ep-brand-mark animate-pulse" style={{ width: 56, height: 56 }}>
+            <Image
+              src="/PradnyaShala.png"
+              alt="PradnyaShala"
+              width={56}
+              height={56}
+              className="w-full h-full object-contain p-1.5 relative z-[1]"
+              priority
+            />
+          </div>
+          <p className="text-sm font-medium" style={{ color: "var(--text-mute)" }}>
+            Loading PradnyaShala...
+          </p>
         </div>
       </div>
     );
@@ -35,13 +46,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen min-w-0">
-        <Header />
-        <main className="flex-1 p-4 lg:p-5 overflow-auto">{children}</main>
-        <Footer />
+    <>
+      <div className="ep-bg-decor" />
+      <div className="relative z-[1] flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col min-h-screen min-w-0">
+          <Header />
+          <main className="flex-1 px-4 lg:px-7 py-6 ep-fade-up">{children}</main>
+          <Footer />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

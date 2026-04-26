@@ -268,6 +268,7 @@ export default function StudentsPage() {
                         title="Click to update photo"
                       >
                         {s.profilePicture ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={s.profilePicture} alt={s.firstName} className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-100" />
                         ) : (
                           <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${getGradient(s.firstName + s.lastName)} flex items-center justify-center text-white text-xs font-bold`}>

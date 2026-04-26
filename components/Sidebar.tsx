@@ -1,101 +1,114 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth } from "@/lib/AuthContext";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 
-const navItems = [
+type NavItem = {
+  key: string;
+  href: string;
+  labelKey: string;
+  icon: ReactNode;
+  badge?: string;
+};
+
+type NavGroup = {
+  groupKey: string;
+  items: NavItem[];
+};
+
+const Icon = ({ children }: { children: ReactNode }) => (
+  <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24" aria-hidden="true">
+    {children}
+  </svg>
+);
+
+const NAV: NavGroup[] = [
   {
-    key: "nav.dashboard",
-    href: "/",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1" />,
+    groupKey: "Main",
+    items: [
+      {
+        key: "dashboard", href: "/", labelKey: "nav.dashboard",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M3 13h7V3H3v10zm11 8h7V11h-7v10zM3 21h7v-6H3v6zM14 3v6h7V3h-7z" /></Icon>,
+      },
+      {
+        key: "students", href: "/students", labelKey: "nav.students",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H3v-2a4 4 0 014-4h4a4 4 0 014 4v2H9zm3-10a4 4 0 100-8 4 4 0 000 8zm6 0a3 3 0 100-6 3 3 0 000 6z" /></Icon>,
+      },
+      {
+        key: "teachers", href: "/teachers", labelKey: "nav.teachers",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M22 10v6M2 10l10-5 10 5-10 5-10-5zM6 12v5c3 3 9 3 12 0v-5" /></Icon>,
+      },
+      {
+        key: "classes", href: "/classes", labelKey: "nav.classes",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M2 4a2 2 0 012-2h6.5a3.5 3.5 0 013.5 3.5V22M22 4a2 2 0 00-2-2h-6.5A3.5 3.5 0 0010 5.5V22" /></Icon>,
+      },
+    ],
   },
   {
-    key: "nav.students",
-    href: "/students",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />,
+    groupKey: "Academics",
+    items: [
+      {
+        key: "attendance", href: "/attendance", labelKey: "nav.attendance",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></Icon>,
+      },
+      {
+        key: "timetable", href: "/timetable", labelKey: "nav.timetable",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" /></Icon>,
+      },
+      {
+        key: "exams", href: "/exams", labelKey: "nav.exams",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M12 15l-2 5L9 9l11 4-5 1-2 1zM7.7 6.3L9 7M7 12H5M9 17l-1.3 1.3M16.5 7.5L17.8 6.3" /></Icon>,
+      },
+    ],
   },
   {
-    key: "nav.teachers",
-    href: "/teachers",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z" />,
+    groupKey: "AI Tools",
+    items: [
+      {
+        key: "worksheets", href: "/worksheets", labelKey: "nav.worksheets",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M14 3v4a1 1 0 001 1h4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2zM9 13h6M9 17h6" /></Icon>,
+      },
+      {
+        key: "lessonPlans", href: "/lesson-plans", labelKey: "nav.lessonPlans",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" /></Icon>,
+      },
+      {
+        key: "tests", href: "/tests", labelKey: "nav.tests",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></Icon>,
+      },
+      {
+        key: "doubtSolver", href: "/doubt-solver", labelKey: "nav.doubtSolver",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></Icon>,
+      },
+      {
+        key: "reports", href: "/reports", labelKey: "nav.reports",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18M7 14l4-4 4 4 6-6" /></Icon>,
+      },
+    ],
   },
   {
-    key: "nav.classes",
-    href: "/classes",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />,
-  },
-  {
-    key: "nav.attendance",
-    href: "/attendance",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />,
-  },
-  {
-    key: "nav.exams",
-    href: "/exams",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />,
-  },
-  {
-    key: "nav.fees",
-    href: "/fees",
-    icon: (
-      <>
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </>
-    ),
-  },
-  {
-    key: "nav.timetable",
-    href: "/timetable",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />,
-  },
-  { divider: true, key: "div-ai", labelKey: "nav.aiTools" },
-  {
-    key: "nav.worksheets",
-    href: "/worksheets",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />,
-  },
-  {
-    key: "nav.lessonPlans",
-    href: "/lesson-plans",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />,
-  },
-  {
-    key: "nav.tests",
-    href: "/tests",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />,
-  },
-  {
-    key: "nav.doubtSolver",
-    href: "/doubt-solver",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
-  },
-  {
-    key: "nav.reports",
-    href: "/reports",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />,
-  },
-  { divider: true, key: "div-admin", labelKey: "nav.admin" },
-  {
-    key: "nav.notices",
-    href: "/notices",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />,
-  },
-  {
-    key: "nav.compliance",
-    href: "/compliance",
-    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />,
-  },
-  {
-    key: "nav.settings",
-    href: "/settings",
-    icon: (
-      <>
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </>
-    ),
+    groupKey: "Admin",
+    items: [
+      {
+        key: "fees", href: "/fees", labelKey: "nav.fees",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M2 5h20v14H2zM2 10h20M6 15h2M11 15h2" /></Icon>,
+      },
+      {
+        key: "notices", href: "/notices", labelKey: "nav.notices",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" /></Icon>,
+      },
+      {
+        key: "compliance", href: "/compliance", labelKey: "nav.compliance",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></Icon>,
+      },
+      {
+        key: "settings", href: "/settings", labelKey: "nav.settings",
+        icon: <Icon><path strokeLinecap="round" strokeLinejoin="round" d="M12 15a3 3 0 100-6 3 3 0 000 6z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 005 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6 1.65 1.65 0 0010 3.09V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" /></Icon>,
+      },
+    ],
   },
 ];
 
@@ -110,92 +123,168 @@ export function Sidebar() {
     ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
 
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const handleNav = (href: string) => {
+    setOpen(false);
+    router.push(href);
+  };
+
   return (
     <>
       {open && (
-        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black/45 z-40 lg:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
       )}
 
+      {/* Mobile menu button */}
       <button
-        className="fixed top-3 left-3 z-50 lg:hidden p-2 rounded-lg bg-white shadow-md text-slate-600 hover:bg-slate-50"
+        className="fixed top-3 left-3 z-50 lg:hidden p-2 rounded-xl shadow-md"
+        style={{ background: "var(--surface)", color: "var(--text)" }}
         onClick={() => setOpen(!open)}
         aria-label="Toggle sidebar"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
       <aside
-        className={`fixed lg:sticky top-0 left-0 h-screen w-60 bg-navy flex flex-col z-50 transition-transform duration-300 ${
+        className={`fixed lg:sticky top-0 left-0 h-screen w-[260px] flex flex-col z-50 transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
+        style={{
+          background: "var(--surface)",
+          borderRight: "1px solid var(--border)",
+          padding: "22px 16px",
+          gap: "18px",
+        }}
       >
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
-          <img
-            src="/logo.svg"
-            alt="DigiSchool"
-            className="w-10 h-10 rounded-lg object-contain bg-white shadow-md shadow-black/20"
-          />
-          <span className="text-white font-bold text-lg tracking-tight">{t("app.name")}</span>
-        </div>
+        {/* Brand */}
+        <button
+          onClick={() => handleNav("/")}
+          className="flex items-center gap-3 px-2 py-1 cursor-pointer text-left"
+        >
+          <div className="ep-brand-mark">
+            <Image
+              src="/PradnyaShala.png"
+              alt="PradnyaShala"
+              width={40}
+              height={40}
+              className="w-full h-full object-contain p-1 relative z-[1]"
+              priority
+            />
+          </div>
+          <div className="min-w-0">
+            <div className="font-extrabold text-[18px] tracking-tight" style={{ color: "var(--text)" }}>
+            प्रज्ञाशाळा
+            </div>
+            <div className="text-[11px] uppercase tracking-[0.18em]" style={{ color: "var(--text-mute)" }}>
+              Intelligent School
+            </div>
+          </div>
+        </button>
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {navItems.map((item) => {
-            if ("divider" in item && item.divider) {
-              const divItem = item as { key: string; divider: true; labelKey: string };
-              return (
-                <div key={divItem.key} className="pt-4 pb-1 px-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    {t(divItem.labelKey)}
-                  </p>
-                </div>
-              );
-            }
-            const navItem = item as { key: string; href: string; icon: React.ReactNode };
-            const isActive = navItem.href === "/" ? pathname === "/" : pathname.startsWith(navItem.href);
-            return (
-              <button
-                key={navItem.key}
-                className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-gradient-to-r from-teal to-emerald text-white shadow-lg shadow-teal/20"
-                    : "text-slate-400 hover:bg-navy-hover hover:text-slate-200"
-                }`}
-                onClick={() => { setOpen(false); router.push(navItem.href); }}
+        {/* Nav groups */}
+        <nav className="flex-1 overflow-y-auto pr-1 -mr-1 flex flex-col gap-3 mt-1">
+          {NAV.map((group) => (
+            <div key={group.groupKey} className="flex flex-col gap-0.5">
+              <div
+                className="text-[11px] uppercase tracking-[0.15em] px-3 pt-2 pb-1"
+                style={{ color: "var(--text-mute)" }}
               >
-                <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {navItem.icon}
-                </svg>
-                {t(navItem.key)}
-              </button>
-            );
-          })}
+                {group.groupKey}
+              </div>
+              {group.items.map((it) => {
+                const active = isActive(it.href);
+                return (
+                  <button
+                    key={it.key}
+                    onClick={() => handleNav(it.href)}
+                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium cursor-pointer transition-all"
+                    style={
+                      active
+                        ? {
+                            background: "var(--gradient-brand)",
+                            color: "#fff",
+                            boxShadow: "0 10px 24px rgba(99,102,241,0.35)",
+                          }
+                        : { color: "var(--text-soft)" }
+                    }
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.background = "var(--surface-3)";
+                        e.currentTarget.style.color = "var(--text)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.color = "var(--text-soft)";
+                      }
+                    }}
+                  >
+                    <span className="grid place-items-center">{it.icon}</span>
+                    <span className="flex-1 text-left truncate">{t(it.labelKey)}</span>
+                    {it.badge && (
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        style={{
+                          background: active ? "rgba(255,255,255,0.25)" : "var(--brand-3)",
+                          color: "#fff",
+                        }}
+                      >
+                        {it.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
-        <div className="px-4 py-4 border-t border-white/10">
-          <div className="flex items-center gap-3 px-2">
-            {user?.profilePicture ? (
-              <img src={user.profilePicture} alt={user.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-white/20" />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky to-royal flex items-center justify-center text-white text-xs font-bold">
-                {initials}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium leading-tight truncate">{user?.name || "Loading..."}</p>
-              <p className="text-slate-400 text-xs truncate">{user?.email || ""}</p>
-            </div>
-            <button
-              onClick={logout}
-              title={t("auth.logout")}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
+        {/* Footer profile + logout */}
+        <div
+          className="rounded-2xl p-3 flex items-center gap-3"
+          style={{ background: "var(--surface-3)" }}
+        >
+          <div
+            className="w-10 h-10 rounded-full grid place-items-center text-white text-sm font-bold flex-shrink-0"
+            style={{ background: "var(--gradient-warm)" }}
+          >
+            {initials}
           </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[13px] font-semibold leading-tight truncate" style={{ color: "var(--text)" }}>
+              {user?.name || "Loading..."}
+            </div>
+            <div className="text-[11px] truncate" style={{ color: "var(--text-mute)" }}>
+              {user?.email || ""}
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            title={t("auth.logout")}
+            className="p-1.5 rounded-lg cursor-pointer transition"
+            style={{ color: "var(--text-soft)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--surface)";
+              e.currentTarget.style.color = "var(--danger)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = "var(--text-soft)";
+            }}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </aside>
     </>

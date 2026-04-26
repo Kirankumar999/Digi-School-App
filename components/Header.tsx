@@ -1,14 +1,37 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { useLocale } from "@/lib/i18n/LocaleContext";
+import { useTheme } from "@/lib/ThemeContext";
+
+const TITLES: Record<string, { title: string; crumbs: string[] }> = {
+  "/": { title: "Dashboard", crumbs: ["Home", "Dashboard"] },
+  "/students": { title: "Students", crumbs: ["Home", "Academics", "Students"] },
+  "/teachers": { title: "Teachers", crumbs: ["Home", "Faculty", "Teachers"] },
+  "/classes": { title: "Classes & Subjects", crumbs: ["Home", "Academics", "Classes"] },
+  "/attendance": { title: "Attendance", crumbs: ["Home", "Academics", "Attendance"] },
+  "/timetable": { title: "Timetable", crumbs: ["Home", "Academics", "Timetable"] },
+  "/exams": { title: "Exams", crumbs: ["Home", "Academics", "Exams"] },
+  "/fees": { title: "Fees", crumbs: ["Home", "Admin", "Fees"] },
+  "/notices": { title: "Notices", crumbs: ["Home", "Admin", "Notices"] },
+  "/settings": { title: "Settings", crumbs: ["Home", "Settings"] },
+  "/profile": { title: "Profile", crumbs: ["Home", "Profile"] },
+  "/worksheets": { title: "Worksheets", crumbs: ["Home", "AI Tools", "Worksheets"] },
+  "/lesson-plans": { title: "Lesson Plans", crumbs: ["Home", "AI Tools", "Lesson Plans"] },
+  "/tests": { title: "Tests", crumbs: ["Home", "AI Tools", "Tests"] },
+  "/doubt-solver": { title: "Doubt Solver", crumbs: ["Home", "AI Tools", "Doubt Solver"] },
+  "/reports": { title: "Reports", crumbs: ["Home", "AI Tools", "Reports"] },
+  "/compliance": { title: "Compliance", crumbs: ["Home", "Admin", "Compliance"] },
+};
 
 export function Header() {
   const { user, logout } = useAuth();
   const { locale, setLocale, t } = useLocale();
+  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,134 +46,255 @@ export function Header() {
   }, []);
 
   const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "?";
 
+  const meta = TITLES[pathname] || { title: "PradnyaShala", crumbs: ["Home"] };
+  const greetingName = user?.name?.split(" ")[0] || "";
+  const displayTitle =
+    pathname === "/" && greetingName ? `Welcome back, ${greetingName} 👋` : meta.title;
+
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200/60">
-      <div className="flex items-center justify-between px-4 lg:px-6 py-3">
-        <div className="flex items-center gap-2.5 pl-10 lg:pl-0">
-          <img
-            src="/logo.svg"
-            alt="DigiSchool"
-            className="w-8 h-8 rounded-lg object-contain"
-          />
-          <span className="text-teal font-extrabold text-xl tracking-tight">{t("app.name")}</span>
-          <span className="text-slate-700 font-semibold text-base hidden sm:inline">
-            {t("app.tagline")}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Language Toggle */}
-          <button
-            onClick={() => setLocale(locale === "en" ? "mr" : "en")}
-            className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-bold transition cursor-pointer border border-slate-200"
-            title="Switch language"
-          >
-            {locale === "en" ? "मराठी" : "ENG"}
-          </button>
-          {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition cursor-pointer">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            <span className="absolute top-1 right-1 w-4 h-4 bg-rose text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-              3
+    <header
+      className="sticky top-0 z-30 flex items-center gap-4 px-4 lg:px-7"
+      style={{
+        height: "70px",
+        background: "var(--glass)",
+        backdropFilter: "saturate(140%) blur(14px)",
+        WebkitBackdropFilter: "saturate(140%) blur(14px)",
+        borderBottom: "1px solid var(--border-soft)",
+      }}
+    >
+      {/* Page title + crumbs */}
+      <div className="flex flex-col min-w-0 pl-10 lg:pl-0">
+        <h1
+          className="text-[18px] font-bold leading-tight tracking-tight truncate"
+          style={{ color: "var(--text)" }}
+        >
+          {displayTitle}
+        </h1>
+        <div className="text-[12px] mt-0.5 truncate" style={{ color: "var(--text-mute)" }}>
+          {meta.crumbs.map((c, i) => (
+            <span key={i}>
+              {i > 0 && <span className="opacity-50 mx-1.5">/</span>}
+              {c}
             </span>
-          </button>
-          {/* Help */}
-          <button className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition cursor-pointer">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </button>
-          {/* User dropdown */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 cursor-pointer"
+          ))}
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="hidden md:block ml-5 flex-1 max-w-[420px] relative">
+        <span
+          className="absolute left-3 top-1/2 -translate-y-1/2 grid place-items-center"
+          style={{ color: "var(--text-mute)" }}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+          </svg>
+        </span>
+        <input
+          type="text"
+          placeholder="Search students, classes, fees…"
+          className="w-full text-[13.5px] outline-none"
+          style={{
+            padding: "11px 14px 11px 40px",
+            borderRadius: "12px",
+            background: "var(--surface-3)",
+            border: "1px solid transparent",
+            color: "var(--text)",
+            transition: "background 160ms, border-color 160ms",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.background = "var(--surface)";
+            e.currentTarget.style.borderColor = "var(--brand-1)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.background = "var(--surface-3)";
+            e.currentTarget.style.borderColor = "transparent";
+          }}
+        />
+        <kbd
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded-md"
+          style={{
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            color: "var(--text-mute)",
+          }}
+        >
+          ⌘K
+        </kbd>
+      </div>
+
+      {/* Right actions */}
+      <div className="ml-auto flex items-center gap-2">
+        {/* Language */}
+        <button
+          onClick={() => setLocale(locale === "en" ? "mr" : "en")}
+          className="px-3 py-2 rounded-xl text-xs font-bold cursor-pointer transition"
+          style={{ background: "var(--surface-3)", color: "var(--text-soft)" }}
+          title="Switch language"
+        >
+          {locale === "en" ? "मराठी" : "ENG"}
+        </button>
+
+        {/* Help */}
+        <button
+          className="hidden sm:grid relative w-10 h-10 rounded-xl place-items-center cursor-pointer transition"
+          style={{ background: "var(--surface-3)", color: "var(--text-soft)" }}
+          aria-label="Help"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+
+        {/* Notifications */}
+        <button
+          className="relative w-10 h-10 rounded-xl grid place-items-center cursor-pointer transition"
+          style={{ background: "var(--surface-3)", color: "var(--text-soft)" }}
+          aria-label="Notifications"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+          <span className="ep-dot" />
+        </button>
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="ep-theme-toggle"
+          aria-label="Toggle theme"
+          title="Toggle theme"
+        >
+          <span className="knob">
+            {theme === "dark" ? (
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" />
+                <path strokeLinecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+            )}
+          </span>
+        </button>
+
+        {/* User chip */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex items-center gap-2.5 cursor-pointer rounded-full pr-3 pl-1.5 py-1 transition"
+            style={{ background: "var(--surface-3)" }}
+          >
+            <div
+              className="w-8 h-8 rounded-full grid place-items-center text-white text-[12px] font-bold"
+              style={{ background: "var(--gradient-warm)" }}
             >
-              {user?.profilePicture ? (
-                <img src={user.profilePicture} alt={user.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow" />
-              ) : (
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-badge to-orange-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-white shadow">
+              {initials}
+            </div>
+            <div className="hidden md:flex flex-col leading-tight text-left">
+              <span className="text-[13px] font-semibold" style={{ color: "var(--text)" }}>
+                {user?.name || "—"}
+              </span>
+              <span className="text-[11px] capitalize" style={{ color: "var(--text-mute)" }}>
+                {user?.role || ""}
+              </span>
+            </div>
+          </button>
+
+          {dropdownOpen && (
+            <div
+              className="absolute right-0 mt-2 w-64 rounded-2xl py-2 z-50 ep-fade-up"
+              style={{
+                background: "var(--surface)",
+                border: "1px solid var(--border-soft)",
+                boxShadow: "var(--shadow-md)",
+              }}
+            >
+              <div
+                className="px-4 py-3 flex items-center gap-3"
+                style={{ borderBottom: "1px solid var(--border-soft)" }}
+              >
+                <div
+                  className="w-10 h-10 rounded-full grid place-items-center text-white text-sm font-bold"
+                  style={{ background: "var(--gradient-warm)" }}
+                >
                   {initials}
                 </div>
-              )}
-              <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-slate-700 leading-tight">{user?.name}</p>
-                <p className="text-xs text-slate-400 capitalize">{user?.role}</p>
-              </div>
-              <svg className="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200/60 py-2 z-50 animate-[fadeIn_0.15s_ease-out]">
-                <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
-                  {user?.profilePicture ? (
-                    <img src={user.profilePicture} alt={user.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-badge to-orange-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-slate-100">
-                      {initials}
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">{user?.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{user?.email}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-teal/10 text-teal capitalize">
-                      {user?.role}
-                    </span>
-                  </div>
-                </div>
-                <div className="py-1">
-                  <button
-                    onClick={() => { setDropdownOpen(false); router.push("/profile"); }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    {t("auth.myProfile")}
-                  </button>
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition cursor-pointer">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {t("auth.settings")}
-                  </button>
-                </div>
-                <div className="border-t border-slate-100 pt-1">
-                  <button
-                    onClick={logout}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose hover:bg-rose/5 transition cursor-pointer"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    {t("auth.logout")}
-                  </button>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold truncate" style={{ color: "var(--text)" }}>
+                    {user?.name}
+                  </p>
+                  <p className="text-xs mt-0.5 truncate" style={{ color: "var(--text-mute)" }}>
+                    {user?.email}
+                  </p>
+                  <span className="ep-pill brand mt-1.5 capitalize">{user?.role}</span>
                 </div>
               </div>
-            )}
-          </div>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    router.push("/profile");
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm cursor-pointer transition"
+                  style={{ color: "var(--text-soft)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "var(--surface-3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  {t("auth.myProfile")}
+                </button>
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    router.push("/settings");
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm cursor-pointer transition"
+                  style={{ color: "var(--text-soft)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "var(--surface-3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 005 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6 1.65 1.65 0 0010 3.09V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                  </svg>
+                  {t("auth.settings")}
+                </button>
+              </div>
+              <div style={{ borderTop: "1px solid var(--border-soft)" }} className="pt-1">
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm cursor-pointer transition"
+                  style={{ color: "var(--danger)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(239,68,68,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                  }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  {t("auth.logout")}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

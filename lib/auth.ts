@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { connectDB } from "./mongodb";
 import User from "./models/User";
+import { MOCK_MODE, MOCK_USER, MOCK_TOKEN_USER_ID } from "./mockData";
 
 const JWT_SECRET = process.env.JWT_SECRET || "digischool-super-secret-key-change-in-production";
 const JWT_EXPIRES_IN = "7d";
@@ -27,6 +28,11 @@ export async function getAuthUser() {
 
   const decoded = verifyToken(token);
   if (!decoded) return null;
+
+  // In MOCK_MODE return a static user so the dashboard works without DB.
+  if (MOCK_MODE && decoded.userId === MOCK_TOKEN_USER_ID) {
+    return MOCK_USER;
+  }
 
   await connectDB();
   const user = await User.findById(decoded.userId).select("-password");

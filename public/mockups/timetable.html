@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timetable — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Timetable" page-crumbs="Home / Academics / Timetable">
+
+    <div class="card reveal">
+      <div class="card-head">
+        <div>
+          <h3>Weekly Schedule</h3>
+          <p class="text-mute mt-4">Grade 10A • Week of April 19 – April 25</p>
+        </div>
+        <div class="flex gap-8 center">
+          <select class="input-mini">
+            <option>Grade 10A</option>
+            <option>Grade 10B</option>
+            <option>Grade 11A</option>
+            <option>Grade 9A</option>
+          </select>
+          <button class="icon-btn" title="Previous"><i data-lucide="chevron-left"></i></button>
+          <span class="pill brand">This week</span>
+          <button class="icon-btn" title="Next"><i data-lucide="chevron-right"></i></button>
+          <button class="btn btn-ghost"><i data-lucide="printer"></i> Print</button>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> Add Slot</button>
+        </div>
+      </div>
+
+      <div class="timetable">
+        <!-- Header row -->
+        <div class="tt-cell" style="background:transparent; border:0;"></div>
+        <div class="tt-cell" style="background:transparent; border:0;"><b>Mon</b></div>
+        <div class="tt-cell hide-sm" style="background:transparent; border:0;"><b>Tue</b></div>
+        <div class="tt-cell" style="background:transparent; border:0;"><b>Wed</b></div>
+        <div class="tt-cell hide-sm" style="background:transparent; border:0;"><b>Thu</b></div>
+        <div class="tt-cell hide-sm" style="background:transparent; border:0;"><b>Fri</b></div>
+
+        <!-- 8:00 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">8:00</div>
+        <div class="tt-cell has b1">
+          <div class="tt-title">Mathematics</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+        <div class="tt-cell hide-sm has b3">
+          <div class="tt-title">English Lit</div>
+          <div class="tt-meta">Ms. Reyes • R102</div>
+        </div>
+        <div class="tt-cell has b1">
+          <div class="tt-title">Mathematics</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+        <div class="tt-cell hide-sm has b3">
+          <div class="tt-title">English Lit</div>
+          <div class="tt-meta">Ms. Reyes • R102</div>
+        </div>
+        <div class="tt-cell hide-sm has b1">
+          <div class="tt-title">Mathematics</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+
+        <!-- 9:15 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">9:15</div>
+        <div class="tt-cell has b2">
+          <div class="tt-title">Physics</div>
+          <div class="tt-meta">Dr. Patel • Lab 1</div>
+        </div>
+        <div class="tt-cell hide-sm has b2">
+          <div class="tt-title">Physics</div>
+          <div class="tt-meta">Dr. Patel • Lab 1</div>
+        </div>
+        <div class="tt-cell has b4">
+          <div class="tt-title">Computer Sci</div>
+          <div class="tt-meta">Mr. Nakamura • Lab</div>
+        </div>
+        <div class="tt-cell hide-sm has b2">
+          <div class="tt-title">Physics</div>
+          <div class="tt-meta">Dr. Patel • Lab 1</div>
+        </div>
+        <div class="tt-cell hide-sm has b4">
+          <div class="tt-title">Computer Sci</div>
+          <div class="tt-meta">Mr. Nakamura • Lab</div>
+        </div>
+
+        <!-- 10:30 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">10:30</div>
+        <div class="tt-cell has b3">
+          <div class="tt-title">English Lit</div>
+          <div class="tt-meta">Ms. Reyes • R102</div>
+        </div>
+        <div class="tt-cell hide-sm">— Break —</div>
+        <div class="tt-cell">— Break —</div>
+        <div class="tt-cell hide-sm has b3">
+          <div class="tt-title">English Lit</div>
+          <div class="tt-meta">Ms. Reyes • R102</div>
+        </div>
+        <div class="tt-cell hide-sm">— Break —</div>
+
+        <!-- 11:30 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">11:30</div>
+        <div class="tt-cell has b5">
+          <div class="tt-title">History</div>
+          <div class="tt-meta">Ms. Chen • R305</div>
+        </div>
+        <div class="tt-cell hide-sm has b1">
+          <div class="tt-title">Mathematics</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+        <div class="tt-cell has b5">
+          <div class="tt-title">History</div>
+          <div class="tt-meta">Ms. Chen • R305</div>
+        </div>
+        <div class="tt-cell hide-sm has b1">
+          <div class="tt-title">Mathematics</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+        <div class="tt-cell hide-sm has b5">
+          <div class="tt-title">History</div>
+          <div class="tt-meta">Ms. Chen • R305</div>
+        </div>
+
+        <!-- 13:00 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">13:00</div>
+        <div class="tt-cell has b4">
+          <div class="tt-title">P.E.</div>
+          <div class="tt-meta">Coach Williams • Field</div>
+        </div>
+        <div class="tt-cell hide-sm has b3">
+          <div class="tt-title">Spanish</div>
+          <div class="tt-meta">Ms. Martinez • R210</div>
+        </div>
+        <div class="tt-cell has b4">
+          <div class="tt-title">P.E.</div>
+          <div class="tt-meta">Coach Williams • Field</div>
+        </div>
+        <div class="tt-cell hide-sm has b3">
+          <div class="tt-title">Spanish</div>
+          <div class="tt-meta">Ms. Martinez • R210</div>
+        </div>
+        <div class="tt-cell hide-sm has b2">
+          <div class="tt-title">Art</div>
+          <div class="tt-meta">Mr. Bennett • Studio</div>
+        </div>
+
+        <!-- 14:15 -->
+        <div class="tt-cell tt-time" style="background:transparent; border:0;">14:15</div>
+        <div class="tt-cell">Free</div>
+        <div class="tt-cell hide-sm has b4">
+          <div class="tt-title">Robotics Club</div>
+          <div class="tt-meta">Optional • Lab</div>
+        </div>
+        <div class="tt-cell has b1">
+          <div class="tt-title">Math Tutorial</div>
+          <div class="tt-meta">Mr. Anderson • R204</div>
+        </div>
+        <div class="tt-cell hide-sm has b5">
+          <div class="tt-title">Debate Club</div>
+          <div class="tt-meta">Optional • Aud.</div>
+        </div>
+        <div class="tt-cell hide-sm">Free</div>
+      </div>
+    </div>
+
+    <div class="row-3">
+      <div class="card reveal">
+        <div class="card-head"><h3>Today's Highlights</h3></div>
+        <div class="flex-col gap-12">
+          <div class="flex center gap-12">
+            <div class="activity-dot b"><i data-lucide="bell-ring"></i></div>
+            <div><div style="font-weight:600;">Quiz at 11:30</div><div class="text-mute tiny">History — Chapter 7</div></div>
+          </div>
+          <div class="flex center gap-12">
+            <div class="activity-dot s"><i data-lucide="trophy"></i></div>
+            <div><div style="font-weight:600;">Sports Practice</div><div class="text-mute tiny">Field A — 13:00</div></div>
+          </div>
+          <div class="flex center gap-12">
+            <div class="activity-dot w"><i data-lucide="users"></i></div>
+            <div><div style="font-weight:600;">Class Photo</div><div class="text-mute tiny">12:30 PM — Quad</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head"><h3>Room Availability</h3></div>
+        <div class="flex-col gap-12">
+          <div class="flex between center"><span>Room 204</span><span class="pill danger">Occupied</span></div>
+          <div class="flex between center"><span>Lab 1</span><span class="pill success">Available</span></div>
+          <div class="flex between center"><span>Auditorium</span><span class="pill warning">Reserved</span></div>
+          <div class="flex between center"><span>Computer Lab</span><span class="pill success">Available</span></div>
+          <div class="flex between center"><span>Art Studio</span><span class="pill success">Available</span></div>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head"><h3>Substitutions</h3></div>
+        <div class="flex-col gap-12">
+          <div class="flex center gap-12">
+            <div class="avatar g3">JC</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;">Ms. Julia Chen</div>
+              <div class="text-mute tiny">Out — Mr. Bennett covering</div>
+            </div>
+            <span class="pill warning">Today</span>
+          </div>
+          <div class="flex center gap-12">
+            <div class="avatar g5">AB</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;">Mr. Alan Bennett</div>
+              <div class="text-mute tiny">On leave — week</div>
+            </div>
+            <span class="pill danger">5 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

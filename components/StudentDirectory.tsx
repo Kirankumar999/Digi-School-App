@@ -154,6 +154,7 @@ export function StudentDirectory() {
                     <td className="py-2 px-1 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {s.profilePicture ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img src={s.profilePicture} alt={fullName} className="w-6 h-6 rounded-full object-cover shrink-0" />
                         ) : (
                           <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${getGradient(fullName)} flex items-center justify-center text-white text-[9px] font-bold shrink-0`}>

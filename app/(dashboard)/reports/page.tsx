@@ -351,7 +351,9 @@ export default function ReportsPage() {
             <h2 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">{svg("M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")} Select Student</h2>
             {selectedStudent ? (
               <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl border border-teal-200">
-                {selectedStudent.profilePicture ? <img src={selectedStudent.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover" /> :
+                {selectedStudent.profilePicture ?
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={selectedStudent.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover" /> :
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">{initials(`${selectedStudent.firstName} ${selectedStudent.lastName}`)}</div>}
                 <div className="flex-1"><p className="text-sm font-semibold text-slate-800">{selectedStudent.firstName} {selectedStudent.lastName}</p><p className="text-xs text-slate-500">Grade {selectedStudent.grade}{selectedStudent.section ? `-${selectedStudent.section}` : ""}</p></div>
                 <button onClick={() => { setSelectedStudent(null); setStudentSearch(""); setSData(null); }} className="p-1.5 rounded-lg hover:bg-teal-100 text-teal-600 cursor-pointer">{svg("M6 18L18 6M6 6l12 12", "w-3.5 h-3.5")}</button>
@@ -363,7 +365,9 @@ export default function ReportsPage() {
                   <div className="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-lg border border-slate-100 max-h-60 overflow-y-auto">
                     {studentOptions.map((s) => (
                       <button key={s._id} onClick={() => selectStudent(s)} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 transition text-left cursor-pointer">
-                        {s.profilePicture ? <img src={s.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" /> :
+                        {s.profilePicture ?
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={s.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" /> :
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">{initials(`${s.firstName} ${s.lastName}`)}</div>}
                         <div><p className="text-sm font-medium text-slate-700">{s.firstName} {s.lastName}</p><p className="text-[10px] text-slate-400">Grade {s.grade}</p></div>
                       </button>
@@ -616,7 +620,7 @@ export default function ReportsPage() {
                 </tr></thead>
                 <tbody>{rcList.map((r) => (
                   <tr key={r._id} className="border-b border-slate-50 hover:bg-slate-50">
-                    <td className="py-3 px-4"><input type="checkbox" checked={rcSelected.has(r._id)} onChange={() => setRcSelected((p) => { const n = new Set(p); n.has(r._id) ? n.delete(r._id) : n.add(r._id); return n; })} className="rounded cursor-pointer" /></td>
+                    <td className="py-3 px-4"><input type="checkbox" checked={rcSelected.has(r._id)} onChange={() => setRcSelected((p) => { const n = new Set(p); if (n.has(r._id)) n.delete(r._id); else n.add(r._id); return n; })} className="rounded cursor-pointer" /></td>
                     <td className="py-3 px-3"><p className="font-medium text-slate-700">{r.studentName}</p><p className="text-[10px] text-slate-400">Class {r.classNum}{r.studentSection ? `-${r.studentSection}` : ""}</p></td>
                     <td className="py-3 px-3 text-slate-600">{r.term}<br /><span className="text-[10px] text-slate-400">{r.academicYear}</span></td>
                     <td className="py-3 px-3 text-center font-semibold text-slate-700">{r.overallPercentage.toFixed(1)}%</td>

@@ -1,9 +1,9 @@
 {
   "app": {
-    "name": "DigiSchool",
-    "tagline": "School Administration Portal",
+    "name": "PradnyaShala",
+    "tagline": "Intelligent School Administration Portal",
     "description": "Comprehensive school administration portal for managing students, teachers, classes, and performance metrics.",
-    "loading": "Loading DigiSchool...",
+    "loading": "Loading PradnyaShala...",
     "version": "Version: 1.0.0",
     "curriculum": "Curriculum: MSCERT (Maharashtra State Board)",
     "aiModels": "AI Models: Google Gemini (text), Claude (vision)"
@@ -106,7 +106,7 @@
     "loginSubtitle": "Sign in to your account to continue",
     "signup": "Sign Up",
     "signupTitle": "Create your account",
-    "signupSubtitle": "Get started with DigiSchool",
+    "signupSubtitle": "Get started with PradnyaShala",
     "logout": "Sign Out",
     "myProfile": "My Profile",
     "settings": "Settings",
@@ -655,7 +655,7 @@
     "bio": "Bio"
   },
   "pwa": {
-    "install": "Install DigiSchool",
+    "install": "Install PradnyaShala",
     "installDescription": "Install this app on your device for quick access and offline use.",
     "installButton": "Install",
     "notNow": "Not now",

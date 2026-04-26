@@ -188,6 +188,7 @@ export function TeacherProfile({ teacher, onClose, onUpdate, onPhotoClick }: Tea
         <div className="flex items-end gap-4">
           <button onClick={onPhotoClick} className="relative group cursor-pointer shrink-0" title="Change photo">
             {teacher.profilePicture ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={teacher.profilePicture} alt={fullName} className="w-24 h-24 rounded-2xl object-cover ring-4 ring-white shadow-xl" />
             ) : (
               <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${getGradient(fullName)} flex items-center justify-center text-white text-2xl font-bold ring-4 ring-white shadow-xl`}>

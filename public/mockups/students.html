@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Students — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Students" page-crumbs="Home / Academics / Students">
+
+    <!-- Quick stats -->
+    <div class="stats-grid">
+      <div class="stat s1 reveal">
+        <div class="stat-icon"><i data-lucide="users"></i></div>
+        <div>
+          <div class="label">Total Enrolled</div>
+          <div class="value"><span data-count="2847">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +124 this term</div>
+        </div>
+      </div>
+      <div class="stat s2 reveal">
+        <div class="stat-icon"><i data-lucide="user-plus"></i></div>
+        <div>
+          <div class="label">New Applications</div>
+          <div class="value"><span data-count="23">0</span></div>
+          <div class="delta"><i data-lucide="clock"></i> Pending review</div>
+        </div>
+      </div>
+      <div class="stat s3 reveal">
+        <div class="stat-icon"><i data-lucide="user-check"></i></div>
+        <div>
+          <div class="label">Active Today</div>
+          <div class="value"><span data-count="2683">0</span></div>
+          <div class="delta"><i data-lucide="check-circle-2"></i> 94.2% attendance</div>
+        </div>
+      </div>
+      <div class="stat s4 reveal">
+        <div class="stat-icon"><i data-lucide="award"></i></div>
+        <div>
+          <div class="label">Honor Roll</div>
+          <div class="value"><span data-count="412">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> +18 vs last term</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="card reveal">
+      <div class="card-head" style="margin-bottom: 8px;">
+        <div>
+          <h3>All Students</h3>
+          <p class="text-mute mt-4">Manage student profiles, enrollment & academic records</p>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost"><i data-lucide="upload"></i> Import</button>
+          <button class="btn btn-ghost"><i data-lucide="download"></i> Export</button>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> Add Student</button>
+        </div>
+      </div>
+
+      <div class="filter-row mt-12">
+        <div class="search" style="flex:1; max-width:340px; margin: 0;">
+          <span class="ic"><i data-lucide="search"></i></span>
+          <input type="text" placeholder="Search by name, ID, email…" />
+        </div>
+        <select class="input-mini">
+          <option>All Grades</option>
+          <option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+          <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+        </select>
+        <select class="input-mini">
+          <option>All Sections</option>
+          <option>Section A</option><option>Section B</option><option>Section C</option>
+        </select>
+        <select class="input-mini">
+          <option>All Status</option>
+          <option>Active</option><option>On Leave</option><option>Suspended</option>
+        </select>
+        <div class="tabs" style="margin-left:auto;">
+          <button class="tab active"><i data-lucide="list" style="width:14px;height:14px;vertical-align:-2px;"></i></button>
+          <button class="tab"><i data-lucide="layout-grid" style="width:14px;height:14px;vertical-align:-2px;"></i></button>
+        </div>
+      </div>
+
+      <div class="table-wrap mt-16">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th><input type="checkbox" /></th>
+              <th>Student</th>
+              <th>ID</th>
+              <th>Grade</th>
+              <th>Guardian</th>
+              <th>Attendance</th>
+              <th>GPA</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g1">EL</div><div><div style="font-weight:600;">Emma Lawson</div><div class="text-mute tiny">emma.l@school.edu</div></div></div></td>
+              <td>STD-1042</td><td>10A</td>
+              <td><div>Olivia Lawson</div><div class="text-mute tiny">+1 555 0142</div></td>
+              <td><span class="pill success">98%</span></td>
+              <td><b>3.98</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn" title="More"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g3">JK</div><div><div style="font-weight:600;">James Kim</div><div class="text-mute tiny">james.k@school.edu</div></div></div></td>
+              <td>STD-1088</td><td>11B</td>
+              <td><div>Daniel Kim</div><div class="text-mute tiny">+1 555 0188</div></td>
+              <td><span class="pill success">96%</span></td>
+              <td><b>3.92</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g6">SO</div><div><div style="font-weight:600;">Sofia Ortega</div><div class="text-mute tiny">sofia.o@school.edu</div></div></div></td>
+              <td>STD-1124</td><td>9A</td>
+              <td><div>Maria Ortega</div><div class="text-mute tiny">+1 555 0224</div></td>
+              <td><span class="pill warning">88%</span></td>
+              <td><b>3.85</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g4">RP</div><div><div style="font-weight:600;">Rahul Patel</div><div class="text-mute tiny">rahul.p@school.edu</div></div></div></td>
+              <td>STD-1167</td><td>12C</td>
+              <td><div>Anita Patel</div><div class="text-mute tiny">+1 555 0367</div></td>
+              <td><span class="pill success">94%</span></td>
+              <td><b>3.79</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g5">MC</div><div><div style="font-weight:600;">Mia Carter</div><div class="text-mute tiny">mia.c@school.edu</div></div></div></td>
+              <td>STD-1210</td><td>8B</td>
+              <td><div>John Carter</div><div class="text-mute tiny">+1 555 0410</div></td>
+              <td><span class="pill warning">85%</span></td>
+              <td><b>3.62</b></td>
+              <td><span class="pill warning">On Leave</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g2">AT</div><div><div style="font-weight:600;">Alex Thompson</div><div class="text-mute tiny">alex.t@school.edu</div></div></div></td>
+              <td>STD-1247</td><td>9B</td>
+              <td><div>Sarah Thompson</div><div class="text-mute tiny">+1 555 0547</div></td>
+              <td><span class="pill brand">New</span></td>
+              <td>—</td>
+              <td><span class="pill info">Pending</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g1">NW</div><div><div style="font-weight:600;">Noah Wilson</div><div class="text-mute tiny">noah.w@school.edu</div></div></div></td>
+              <td>STD-1280</td><td>7A</td>
+              <td><div>Linda Wilson</div><div class="text-mute tiny">+1 555 0680</div></td>
+              <td><span class="pill success">92%</span></td>
+              <td><b>3.55</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td><div class="cell-user"><div class="avatar g3">LB</div><div><div style="font-weight:600;">Lily Brooks</div><div class="text-mute tiny">lily.b@school.edu</div></div></div></td>
+              <td>STD-1303</td><td>10B</td>
+              <td><div>Ethan Brooks</div><div class="text-mute tiny">+1 555 0703</div></td>
+              <td><span class="pill danger">72%</span></td>
+              <td><b>3.21</b></td>
+              <td><span class="pill success">Active</span></td>
+              <td><button class="icon-btn"><i data-lucide="more-horizontal"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex between center mt-16">
+        <div class="text-mute tiny">Showing 1–8 of 2,847 students</div>
+        <div class="flex gap-8 center">
+          <button class="icon-btn"><i data-lucide="chevron-left"></i></button>
+          <span class="pill brand">1</span>
+          <span class="pill">2</span>
+          <span class="pill">3</span>
+          <span class="pill">…</span>
+          <span class="pill">356</span>
+          <button class="icon-btn"><i data-lucide="chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

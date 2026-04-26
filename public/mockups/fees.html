@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fees — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Fees & Payments" page-crumbs="Home / Admin / Fees">
+
+    <div class="stats-grid">
+      <div class="stat s4 reveal">
+        <div class="stat-icon"><i data-lucide="banknote"></i></div>
+        <div>
+          <div class="label">Collected (Term 2)</div>
+          <div class="value"><span data-count="184320" data-prefix="$">0</span></div>
+          <div class="delta"><i data-lucide="trending-up"></i> 78% of target</div>
+        </div>
+      </div>
+      <div class="stat s2 reveal">
+        <div class="stat-icon"><i data-lucide="hourglass"></i></div>
+        <div>
+          <div class="label">Outstanding</div>
+          <div class="value"><span data-count="42150" data-prefix="$">0</span></div>
+          <div class="delta"><i data-lucide="users"></i> 8 invoices pending</div>
+        </div>
+      </div>
+      <div class="stat s3 reveal">
+        <div class="stat-icon"><i data-lucide="alert-circle"></i></div>
+        <div>
+          <div class="label">Overdue</div>
+          <div class="value"><span data-count="12480" data-prefix="$">0</span></div>
+          <div class="delta"><i data-lucide="bell"></i> 3 reminders sent</div>
+        </div>
+      </div>
+      <div class="stat s1 reveal">
+        <div class="stat-icon"><i data-lucide="receipt"></i></div>
+        <div>
+          <div class="label">Avg Fee / Student</div>
+          <div class="value"><span data-count="1842" data-prefix="$">0</span></div>
+          <div class="delta"><i data-lucide="info"></i> Includes scholarships</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card reveal">
+        <div class="card-head">
+          <div>
+            <h3>Collections Trend</h3>
+            <p class="text-mute mt-4">Monthly fee collections — current academic year</p>
+          </div>
+          <div class="tabs">
+            <button class="tab active">Year</button>
+            <button class="tab">Quarter</button>
+            <button class="tab">Month</button>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="collChart"></canvas></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-head"><h3>Quick Actions</h3></div>
+        <div class="flex-col gap-12">
+          <button class="btn btn-primary btn-block"><i data-lucide="plus"></i> Generate Invoice</button>
+          <button class="btn btn-ghost btn-block"><i data-lucide="bell"></i> Send Reminders</button>
+          <button class="btn btn-ghost btn-block"><i data-lucide="file-down"></i> Export Statement</button>
+          <button class="btn btn-outline btn-block"><i data-lucide="settings-2"></i> Fee Settings</button>
+        </div>
+
+        <div class="mt-16" style="padding:14px; background: var(--surface-2); border-radius: 14px;">
+          <div class="text-mute tiny" style="text-transform:uppercase; letter-spacing:.12em;">Term 2 Goal</div>
+          <div class="flex between center mt-8">
+            <b style="font-size: 20px;">$184,320</b>
+            <span class="text-mute tiny">of $235,000</span>
+          </div>
+          <div class="progress mt-8"><span style="width:78%; background:var(--gradient-success);"></span></div>
+          <div class="text-mute tiny mt-8">22% remaining to hit target</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-head">
+        <div>
+          <h3>Recent Transactions</h3>
+          <p class="text-mute mt-4">Latest fee activity across all students</p>
+        </div>
+        <div class="filter-row">
+          <select class="input-mini">
+            <option>All Status</option><option>Paid</option><option>Pending</option><option>Overdue</option>
+          </select>
+          <select class="input-mini">
+            <option>All Methods</option><option>Card</option><option>Bank Transfer</option><option>Cash</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Invoice #</th><th>Student</th><th>Description</th>
+              <th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>INV-2026-0421</b></td>
+              <td><div class="cell-user"><div class="avatar g5">MC</div><div>Mia Carter</div></div></td>
+              <td>Tuition — Term 2</td><td><b>$1,850</b></td>
+              <td><span class="pill brand">Card</span></td><td>Apr 18</td>
+              <td><span class="pill success">Paid</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0420</b></td>
+              <td><div class="cell-user"><div class="avatar g1">EL</div><div>Emma Lawson</div></div></td>
+              <td>Tuition + Lab Fees</td><td><b>$2,140</b></td>
+              <td><span class="pill info">Bank</span></td><td>Apr 17</td>
+              <td><span class="pill success">Paid</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0419</b></td>
+              <td><div class="cell-user"><div class="avatar g3">JK</div><div>James Kim</div></div></td>
+              <td>Tuition — Term 2</td><td><b>$1,850</b></td>
+              <td><span class="pill brand">Card</span></td><td>Apr 16</td>
+              <td><span class="pill success">Paid</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0418</b></td>
+              <td><div class="cell-user"><div class="avatar g6">SO</div><div>Sofia Ortega</div></div></td>
+              <td>Tuition + Transport</td><td><b>$2,050</b></td>
+              <td><span class="pill">—</span></td><td>Apr 16</td>
+              <td><span class="pill warning">Pending</span></td>
+              <td><button class="icon-btn"><i data-lucide="bell"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0417</b></td>
+              <td><div class="cell-user"><div class="avatar g4">RP</div><div>Rahul Patel</div></div></td>
+              <td>Tuition — Term 2</td><td><b>$1,850</b></td>
+              <td><span class="pill info">Bank</span></td><td>Apr 15</td>
+              <td><span class="pill success">Paid</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0416</b></td>
+              <td><div class="cell-user"><div class="avatar g2">AT</div><div>Alex Thompson</div></div></td>
+              <td>Admission Fee</td><td><b>$3,200</b></td>
+              <td><span class="pill">—</span></td><td>Apr 12</td>
+              <td><span class="pill danger">Overdue</span></td>
+              <td><button class="icon-btn"><i data-lucide="bell"></i></button></td>
+            </tr>
+            <tr>
+              <td><b>INV-2026-0415</b></td>
+              <td><div class="cell-user"><div class="avatar g3">LB</div><div>Lily Brooks</div></div></td>
+              <td>Tuition — Term 2</td><td><b>$1,850</b></td>
+              <td><span class="pill warning">Cash</span></td><td>Apr 10</td>
+              <td><span class="pill success">Paid</span></td>
+              <td><button class="icon-btn"><i data-lucide="download"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function build() {
+      const c = window.__themeColors();
+      const ctx = document.getElementById("collChart");
+      const grad = ctx.getContext("2d").createLinearGradient(0,0,0,280);
+      grad.addColorStop(0, c.brand1+"60");
+      grad.addColorStop(1, c.brand1+"00");
+      const grad2 = ctx.getContext("2d").createLinearGradient(0,0,0,280);
+      grad2.addColorStop(0, c.success+"60");
+      grad2.addColorStop(1, c.success+"00");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr"],
+          datasets: [
+            { label: "Collected", data: [120,160,180,170,150,210,190,220,184], borderColor: c.success, backgroundColor: grad2, tension: .4, fill: true, borderWidth: 3, pointRadius: 0, pointHoverRadius: 6 },
+            { label: "Target",    data: [150,180,200,200,180,230,220,235,235], borderColor: c.brand1,  backgroundColor: grad,  tension: .4, fill: false, borderWidth: 2, borderDash: [6,6], pointRadius: 0 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: c.text } } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: c.mute } },
+            y: { grid: { color: c.grid }, ticks: { color: c.mute, callback: v => "$"+v+"k" } }
+          }
+        }
+      });
+    }
+    window.__rebuildCharts = () => location.reload();
+    window.addEventListener("load", () => { lucide.createIcons(); build(); });
+  </script>
+</body>
+</html>

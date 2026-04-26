@@ -180,6 +180,7 @@ export default function ProfilePage() {
               {/* Avatar */}
               <div className="relative group mb-4">
                 {previewPic ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={previewPic}
                     alt="Profile"

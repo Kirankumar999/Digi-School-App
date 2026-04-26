@@ -263,6 +263,7 @@ export default function TestsPage() {
               {selectedStudent ? (
                 <div className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl border border-teal-200 mb-3">
                   {selectedStudent.profilePicture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={selectedStudent.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">
@@ -291,6 +292,7 @@ export default function TestsPage() {
                       {studentOptions.map((s) => (
                         <button key={s._id} onClick={() => selectStudent(s)} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 transition text-left cursor-pointer">
                           {s.profilePicture ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img src={s.profilePicture} alt="" className="w-8 h-8 rounded-full object-cover" />
                           ) : (
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">
@@ -372,6 +374,7 @@ export default function TestsPage() {
                 </div>
               ) : imagePreview ? (
                 <div className="space-y-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={imagePreview} alt="Answer sheet" className="w-full rounded-xl border border-slate-200 max-h-64 object-contain bg-slate-50" />
                   <button onClick={() => { setImagePreview(""); setImageBase64(""); }} className="text-xs text-rose-500 hover:text-rose-700 cursor-pointer font-medium">Remove image</button>
                 </div>
@@ -553,7 +556,7 @@ export default function TestsPage() {
                 <tbody>
                   {history.map((h) => (
                     <tr key={h._id} className="border-b border-slate-50 hover:bg-slate-50 transition">
-                      <td className="py-3 px-4"><input type="checkbox" checked={hSelected.has(h._id)} onChange={() => setHSelected((prev) => { const n = new Set(prev); n.has(h._id) ? n.delete(h._id) : n.add(h._id); return n; })} className="rounded border-slate-300 cursor-pointer" /></td>
+                      <td className="py-3 px-4"><input type="checkbox" checked={hSelected.has(h._id)} onChange={() => setHSelected((prev) => { const n = new Set(prev); if (n.has(h._id)) n.delete(h._id); else n.add(h._id); return n; })} className="rounded border-slate-300 cursor-pointer" /></td>
                       <td className="py-3 px-3"><p className="text-sm font-medium text-slate-700">{h.studentName}</p><p className="text-[10px] text-slate-400">Grade {h.studentGrade}</p></td>
                       <td className="py-3 px-3 text-sm text-slate-600">{h.testName}</td>
                       <td className="py-3 px-3 text-sm text-slate-600">{h.subject}</td>

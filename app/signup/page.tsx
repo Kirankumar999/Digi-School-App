@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SignupPage() {
   const { signup } = useAuth();
@@ -50,10 +51,13 @@ export default function SignupPage() {
         </div>
         <div className="relative z-10 text-center px-12 max-w-lg">
           <div className="w-28 h-28 rounded-2xl bg-white flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-black/20 p-2">
-            <img
-              src="/logo.svg"
-              alt="DigiSchool"
+            <Image
+              src="/PradnyaShala.png"
+              alt="PradnyaShala"
+              width={112}
+              height={112}
               className="w-full h-full object-contain"
+              priority
             />
           </div>
           <h1 className="text-4xl font-extrabold text-white mb-4 tracking-tight">{t("app.name")}</h1>
@@ -82,9 +86,11 @@ export default function SignupPage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <img
-              src="/logo.svg"
-              alt="DigiSchool"
+            <Image
+              src="/PradnyaShala.png"
+              alt="PradnyaShala"
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-xl object-contain shadow-lg"
             />
             <span className="text-2xl font-extrabold text-navy tracking-tight">{t("app.name")}</span>

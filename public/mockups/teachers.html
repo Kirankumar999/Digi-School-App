@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teachers — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .teacher-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .teacher-card {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+    }
+    .teacher-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .teacher-cover {
+      height: 70px;
+      border-radius: 14px;
+      background: var(--gradient-brand);
+      margin-bottom: -34px;
+    }
+    .teacher-card.c2 .teacher-cover { background: var(--gradient-cool); }
+    .teacher-card.c3 .teacher-cover { background: var(--gradient-warm); }
+    .teacher-card.c4 .teacher-cover { background: var(--gradient-success); }
+    .teacher-card.c5 .teacher-cover { background: linear-gradient(135deg,#ef4444,#f59e0b); }
+    .teacher-card.c6 .teacher-cover { background: linear-gradient(135deg,#0ea5e9,#22d3ee); }
+    .teacher-avatar {
+      width: 70px; height: 70px; border-radius: 18px;
+      display: grid; place-items: center;
+      color: #fff; font-weight: 700; font-size: 22px;
+      background: var(--surface);
+      border: 4px solid var(--surface);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 10px;
+    }
+    .teacher-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .teacher-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; margin-top: 14px; padding-top: 14px;
+      border-top: 1px dashed var(--border);
+    }
+    .teacher-stats div { text-align: center; }
+    .teacher-stats .v { font-weight: 700; font-size: 15px; }
+    .teacher-stats .k { font-size: 10.5px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .1em; }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Teachers" page-crumbs="Home / Staff / Teachers">
+
+    <div class="card reveal">
+      <div class="card-head" style="margin-bottom: 8px;">
+        <div>
+          <h3>Faculty Directory</h3>
+          <p class="text-mute mt-4">186 teaching staff across 12 departments</p>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost"><i data-lucide="filter"></i> Filter</button>
+          <button class="btn btn-primary"><i data-lucide="user-plus"></i> Add Teacher</button>
+        </div>
+      </div>
+
+      <div class="filter-row mt-12">
+        <div class="search" style="flex:1; max-width:340px; margin: 0;">
+          <span class="ic"><i data-lucide="search"></i></span>
+          <input type="text" placeholder="Search teachers, subjects, departments…" />
+        </div>
+        <select class="input-mini">
+          <option>All Departments</option>
+          <option>Mathematics</option><option>Science</option><option>English</option>
+          <option>Social Studies</option><option>Arts</option><option>Physical Ed.</option>
+        </select>
+        <select class="input-mini">
+          <option>All Status</option>
+          <option>Full-time</option><option>Part-time</option><option>On Leave</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="teacher-grid">
+
+      <article class="teacher-card reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-brand);">MA</div>
+        <h3 style="margin:6px 0 2px;">Mr. Michael Anderson</h3>
+        <div class="text-mute tiny">Mathematics • Head of Dept.</div>
+        <div class="teacher-meta">
+          <span class="pill brand">Algebra</span>
+          <span class="pill brand">Calculus</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">24</div><div class="k">Classes</div></div>
+          <div><div class="v">412</div><div class="k">Students</div></div>
+          <div><div class="v">4.9</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c2 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-cool);">DP</div>
+        <h3 style="margin:6px 0 2px;">Dr. Priya Patel</h3>
+        <div class="text-mute tiny">Science • Senior Teacher</div>
+        <div class="teacher-meta">
+          <span class="pill info">Physics</span>
+          <span class="pill info">Chemistry</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">18</div><div class="k">Classes</div></div>
+          <div><div class="v">298</div><div class="k">Students</div></div>
+          <div><div class="v">4.8</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c3 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-warm);">SR</div>
+        <h3 style="margin:6px 0 2px;">Ms. Sara Reyes</h3>
+        <div class="text-mute tiny">English Literature</div>
+        <div class="teacher-meta">
+          <span class="pill warning">Poetry</span>
+          <span class="pill warning">Composition</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">20</div><div class="k">Classes</div></div>
+          <div><div class="v">340</div><div class="k">Students</div></div>
+          <div><div class="v">4.9</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c4 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-success);">DW</div>
+        <h3 style="margin:6px 0 2px;">Coach David Williams</h3>
+        <div class="text-mute tiny">Physical Education</div>
+        <div class="teacher-meta">
+          <span class="pill success">Athletics</span>
+          <span class="pill success">Coaching</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">15</div><div class="k">Classes</div></div>
+          <div><div class="v">520</div><div class="k">Students</div></div>
+          <div><div class="v">4.7</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c5 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: linear-gradient(135deg,#ef4444,#f59e0b);">JC</div>
+        <h3 style="margin:6px 0 2px;">Ms. Julia Chen</h3>
+        <div class="text-mute tiny">History • Social Studies</div>
+        <div class="teacher-meta">
+          <span class="pill danger">World History</span>
+          <span class="pill warning">Civics</span>
+          <span class="pill warning">Part-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">12</div><div class="k">Classes</div></div>
+          <div><div class="v">186</div><div class="k">Students</div></div>
+          <div><div class="v">4.6</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c6 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: linear-gradient(135deg,#0ea5e9,#22d3ee);">RN</div>
+        <h3 style="margin:6px 0 2px;">Mr. Robert Nakamura</h3>
+        <div class="text-mute tiny">Computer Science</div>
+        <div class="teacher-meta">
+          <span class="pill info">Programming</span>
+          <span class="pill info">Robotics</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">16</div><div class="k">Classes</div></div>
+          <div><div class="v">240</div><div class="k">Students</div></div>
+          <div><div class="v">4.9</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c2 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-cool);">EM</div>
+        <h3 style="margin:6px 0 2px;">Ms. Elena Martinez</h3>
+        <div class="text-mute tiny">Spanish • Languages</div>
+        <div class="teacher-meta">
+          <span class="pill info">Spanish</span>
+          <span class="pill info">French</span>
+          <span class="pill success">Full-time</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">14</div><div class="k">Classes</div></div>
+          <div><div class="v">220</div><div class="k">Students</div></div>
+          <div><div class="v">4.8</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+      <article class="teacher-card c3 reveal">
+        <div class="teacher-cover"></div>
+        <div class="teacher-avatar" style="background: var(--gradient-warm);">AB</div>
+        <h3 style="margin:6px 0 2px;">Mr. Alan Bennett</h3>
+        <div class="text-mute tiny">Visual Arts</div>
+        <div class="teacher-meta">
+          <span class="pill warning">Painting</span>
+          <span class="pill warning">Sculpture</span>
+          <span class="pill danger">On Leave</span>
+        </div>
+        <div class="teacher-stats">
+          <div><div class="v">10</div><div class="k">Classes</div></div>
+          <div><div class="v">152</div><div class="k">Students</div></div>
+          <div><div class="v">4.7</div><div class="k">Rating</div></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

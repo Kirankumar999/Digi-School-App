@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useLocale } from "@/lib/i18n/LocaleContext";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -42,9 +43,11 @@ export function PWAInstall() {
   return (
     <div className="fixed bottom-4 right-4 z-[100] bg-white rounded-xl shadow-2xl border border-slate-200 p-4 max-w-xs animate-[fadeIn_0.3s_ease-out]">
       <div className="flex items-start gap-3">
-        <img
-          src="/logo.svg"
-          alt="DigiSchool"
+        <Image
+          src="/PradnyaShala.png"
+          alt="PradnyaShala"
+          width={40}
+          height={40}
           className="w-10 h-10 rounded-lg object-contain shrink-0 shadow-md"
         />
         <div className="flex-1">

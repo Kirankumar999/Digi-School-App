@@ -493,7 +493,7 @@ export default function LessonPlansPage() {
             <div className="space-y-3">
               {history.map(h => (
                 <div key={h._id} className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 hover:shadow-md transition flex items-center gap-4">
-                  <input type="checkbox" checked={hSelected.has(h._id)} onChange={() => setHSelected(prev => { const n = new Set(prev); n.has(h._id) ? n.delete(h._id) : n.add(h._id); return n; })} className="rounded border-slate-300 cursor-pointer shrink-0" />
+                  <input type="checkbox" checked={hSelected.has(h._id)} onChange={() => setHSelected(prev => { const n = new Set(prev); if (n.has(h._id)) n.delete(h._id); else n.add(h._id); return n; })} className="rounded border-slate-300 cursor-pointer shrink-0" />
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center shrink-0">
                     <span className="text-purple-700 text-xs font-bold">{h.classNum}</span>
                   </div>

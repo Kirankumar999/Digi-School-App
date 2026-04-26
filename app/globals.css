@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
+/* =========================================================
+   DigiSchool / EduPulse — Design System
+   Tailwind v4 theme tokens + raw CSS for the new visual layer
+   ========================================================= */
+
 @theme inline {
   --font-sans: "Inter", system-ui, sans-serif;
   --font-marathi: "Mukta", system-ui, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
 
+  /* Legacy DigiSchool palette (kept so existing pages still render) */
   --color-navy: #0f1b2d;
   --color-navy-light: #162240;
   --color-navy-hover: #1c2d4a;
@@ -16,26 +22,104 @@
   --color-royal: #6366f1;
   --color-amber-badge: #f59e0b;
   --color-rose: #f43f5e;
+
+  /* EduPulse brand palette */
+  --color-brand-1: #6366f1;
+  --color-brand-2: #8b5cf6;
+  --color-brand-3: #ec4899;
+  --color-brand-4: #06b6d4;
 }
 
+/* ---------- EduPulse design tokens (CSS vars consumed by raw classes) ---------- */
 :root {
-  --background: #f1f5f9;
+  --background: #f6f7fb;
   --foreground: #0f172a;
+
+  /* Brand */
+  --brand-1: #6366f1;
+  --brand-2: #8b5cf6;
+  --brand-3: #ec4899;
+  --brand-4: #06b6d4;
+  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  --gradient-cool: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+  --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+
+  /* Light theme surfaces */
+  --bg: #f6f7fb;
+  --bg-soft: #eef0f7;
+  --surface: #ffffff;
+  --surface-2: #fafbff;
+  --surface-3: #f1f3fb;
+  --border: #e5e7f0;
+  --border-soft: #eef0f7;
+  --text: #0f172a;
+  --text-soft: #475569;
+  --text-mute: #94a3b8;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, .08);
+  --shadow-lg: 0 24px 60px rgba(99, 102, 241, .18);
+
+  --glass: rgba(255, 255, 255, .65);
+  --glass-border: rgba(255, 255, 255, .8);
+  --ring: rgba(99, 102, 241, .35);
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #06b6d4;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --t-fast: 160ms cubic-bezier(.4, 0, .2, 1);
+  --t-med: 260ms cubic-bezier(.4, 0, .2, 1);
+  --t-slow: 420ms cubic-bezier(.4, 0, .2, 1);
+}
+
+html[data-theme="dark"] {
+  --background: #0b1020;
+  --foreground: #e6e9f5;
+
+  --bg: #0b1020;
+  --bg-soft: #0f1530;
+  --surface: #141a36;
+  --surface-2: #1a2147;
+  --surface-3: #232c5a;
+  --border: #232c5a;
+  --border-soft: #1a2147;
+  --text: #e6e9f5;
+  --text-soft: #b4bbd6;
+  --text-mute: #7a83a8;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 24px 60px rgba(99, 102, 241, .35);
+
+  --glass: rgba(20, 26, 54, .55);
+  --glass-border: rgba(255, 255, 255, .08);
+  --ring: rgba(139, 92, 246, .45);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
+  scrollbar-color: var(--surface-3) transparent;
 }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-mute); }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Inter", system-ui, sans-serif;
+  transition: background var(--t-med), color var(--t-med);
+  min-height: 100vh;
 }
 
 html[data-locale="mr"] body {
@@ -47,7 +131,330 @@ html[data-locale="mr"] * {
   font-family: inherit;
 }
 
+/* ===========================================================
+   EduPulse — UI primitives (raw CSS so any page can use them)
+   =========================================================== */
+
+/* Decorative blurred blobs */
+.ep-bg-decor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.ep-bg-decor::before,
+.ep-bg-decor::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.3;
+  animation: ep-float 18s ease-in-out infinite;
+}
+.ep-bg-decor::before {
+  top: -180px;
+  left: -120px;
+  background: radial-gradient(circle, var(--brand-1), transparent 70%);
+}
+.ep-bg-decor::after {
+  bottom: -200px;
+  right: -120px;
+  background: radial-gradient(circle, var(--brand-3), transparent 70%);
+  animation-delay: -9s;
+}
+html[data-theme="dark"] .ep-bg-decor::before,
+html[data-theme="dark"] .ep-bg-decor::after { opacity: 0.22; }
+
+@keyframes ep-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.08); }
+}
+
+/* Brand mark with shine */
+.ep-brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gradient-brand);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.4);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.ep-brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: ep-shine 4s ease-in-out infinite;
+}
+@keyframes ep-shine {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* Card */
+.ep-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.ep-card:hover { box-shadow: var(--shadow-md); }
+
+/* Stat card */
+.ep-stat {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 130px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-med);
+}
+.ep-stat:hover { transform: translateY(-4px); }
+.ep-stat::before {
+  content: "";
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.ep-stat::after {
+  content: "";
+  position: absolute;
+  right: 30px;
+  top: -30px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+.ep-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(6px);
+  position: relative;
+  z-index: 1;
+}
+.ep-stat-body { position: relative; z-index: 1; }
+.ep-stat-label { font-size: 13px; opacity: 0.9; }
+.ep-stat-value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-top: 4px; }
+.ep-stat-delta { font-size: 12px; opacity: 0.9; display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; }
+.ep-stat.s1 { background: var(--gradient-brand); }
+.ep-stat.s2 { background: var(--gradient-cool); }
+.ep-stat.s3 { background: var(--gradient-warm); }
+.ep-stat.s4 { background: var(--gradient-success); }
+
+/* Pills */
+.ep-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--surface-3);
+  color: var(--text-soft);
+}
+.ep-pill.success { background: rgba(16, 185, 129, 0.12); color: var(--success); }
+.ep-pill.warning { background: rgba(245, 158, 11, 0.14); color: var(--warning); }
+.ep-pill.danger { background: rgba(239, 68, 68, 0.14); color: var(--danger); }
+.ep-pill.info { background: rgba(6, 182, 212, 0.14); color: var(--info); }
+.ep-pill.brand { background: rgba(99, 102, 241, 0.14); color: var(--brand-1); }
+
+/* Avatar gradients */
+.ep-avatar {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.ep-avatar.g1 { background: var(--gradient-brand); }
+.ep-avatar.g2 { background: var(--gradient-cool); }
+.ep-avatar.g3 { background: var(--gradient-warm); }
+.ep-avatar.g4 { background: var(--gradient-success); }
+.ep-avatar.g5 { background: linear-gradient(135deg, #ef4444, #f59e0b); }
+.ep-avatar.g6 { background: linear-gradient(135deg, #0ea5e9, #22d3ee); }
+
+/* Progress bar */
+.ep-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.ep-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--gradient-brand);
+  border-radius: 999px;
+  transform-origin: left;
+  animation: ep-grow 1s cubic-bezier(.2, .8, .2, 1) both;
+}
+@keyframes ep-grow { from { transform: scaleX(0); } }
+
+/* Buttons */
+.ep-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast), color var(--t-fast);
+  border: 0;
+}
+.ep-btn:hover { transform: translateY(-1px); }
+.ep-btn-primary {
+  background: var(--gradient-brand);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
+}
+.ep-btn-primary:hover { box-shadow: 0 14px 30px rgba(99, 102, 241, 0.45); }
+.ep-btn-ghost {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.ep-btn-ghost:hover { background: var(--surface); box-shadow: var(--shadow-sm); }
+
+/* Banner */
+.ep-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  color: #fff;
+  background: var(--gradient-brand);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: var(--shadow-md);
+}
+.ep-banner-ic {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+/* Reveal-on-scroll */
+.ep-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.ep-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes ep-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ep-fade-up { animation: ep-fade-up .5s ease both; }
+
+/* Theme toggle */
+.ep-theme-toggle {
+  width: 56px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  position: relative;
+  border: 0;
+  cursor: pointer;
+  transition: background var(--t-fast);
+  flex-shrink: 0;
+}
+.ep-theme-toggle .knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.4);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  transition: transform var(--t-med);
+}
+html[data-theme="dark"] .ep-theme-toggle .knob {
+  transform: translateX(26px);
+}
+
+/* Notification dot */
+.ep-dot {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 3px var(--surface-3);
+  animation: ep-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ep-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45), 0 0 0 3px var(--surface-3); }
+  50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0), 0 0 0 3px var(--surface-3); }
+}
+
+/* Table */
+.ep-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+.ep-table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border-soft);
+}
+.ep-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+}
+.ep-table tbody tr { transition: background var(--t-fast); }
+.ep-table tbody tr:hover { background: var(--surface-2); }
+.ep-table tbody tr:last-child td { border-bottom: 0; }

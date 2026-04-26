@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classes — EduPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .class-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px;
+    }
+    .cls {
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--t-fast), box-shadow var(--t-fast);
+      display: flex; flex-direction: column;
+    }
+    .cls:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .cls-banner {
+      height: 110px; position: relative; overflow: hidden;
+      display: flex; align-items: flex-end; padding: 16px;
+      color: #fff;
+    }
+    .cls-banner::before {
+      content: ""; position: absolute; right: -20px; bottom: -20px;
+      width: 140px; height: 140px; border-radius: 50%;
+      background: rgba(255,255,255,.18);
+    }
+    .cls-banner .ic-bg {
+      position: absolute; right: 14px; top: 14px;
+      opacity: .35;
+    }
+    .cls-banner h3 { margin: 0; font-size: 18px; position: relative; z-index: 1; }
+    .cls-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .cls-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-soft); }
+    .cls-row i { color: var(--text-mute); }
+    .cls-foot {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-soft);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-2);
+    }
+    .stack-avatars { display: flex; }
+    .stack-avatars .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--surface);
+      margin-left: -8px; font-size: 10px;
+    }
+    .stack-avatars .avatar:first-child { margin-left: 0; }
+    .more-count {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--surface-3); color: var(--text-soft);
+      display: grid; place-items: center; font-size: 11px; font-weight: 700;
+      border: 2px solid var(--surface); margin-left: -8px;
+    }
+  </style>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <div data-shell page-title="Classes & Subjects" page-crumbs="Home / Academics / Classes">
+
+    <div class="card reveal">
+      <div class="card-head">
+        <div>
+          <h3>All Classes</h3>
+          <p class="text-mute mt-4">68 active classes • 12 subjects • Term 2</p>
+        </div>
+        <div class="flex gap-8">
+          <div class="tabs">
+            <button class="tab active">Grid</button>
+            <button class="tab">List</button>
+            <button class="tab">Calendar</button>
+          </div>
+          <button class="btn btn-primary"><i data-lucide="plus"></i> New Class</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="class-grid">
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: var(--gradient-brand);">
+          <i class="ic-bg" data-lucide="sigma" style="width:60px;height:60px;"></i>
+          <h3>Advanced Mathematics</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Mr. Michael Anderson</div>
+          <div class="cls-row"><i data-lucide="users"></i> 32 students • Grade 10A</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Mon, Wed, Fri • 08:00 AM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Room 204, North Wing</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g1">EL</div><div class="avatar g3">JK</div>
+            <div class="avatar g4">SO</div><div class="more-count">+29</div>
+          </div>
+          <span class="pill success">In Session</span>
+        </div>
+      </article>
+
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: var(--gradient-cool);">
+          <i class="ic-bg" data-lucide="atom" style="width:60px;height:60px;"></i>
+          <h3>Physics 101</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Dr. Priya Patel</div>
+          <div class="cls-row"><i data-lucide="users"></i> 28 students • Grade 9B</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Tue, Thu • 09:15 AM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Lab 1, Science Block</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g2">RP</div><div class="avatar g6">MC</div>
+            <div class="avatar g5">NW</div><div class="more-count">+25</div>
+          </div>
+          <span class="pill brand">Upcoming</span>
+        </div>
+      </article>
+
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: var(--gradient-warm);">
+          <i class="ic-bg" data-lucide="book-marked" style="width:60px;height:60px;"></i>
+          <h3>English Literature</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Ms. Sara Reyes</div>
+          <div class="cls-row"><i data-lucide="users"></i> 30 students • Grade 11</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Mon, Wed • 10:30 AM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Room 102</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g3">LB</div><div class="avatar g1">EL</div>
+            <div class="avatar g4">JK</div><div class="more-count">+27</div>
+          </div>
+          <span class="pill warning">Assignment Due</span>
+        </div>
+      </article>
+
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: var(--gradient-success);">
+          <i class="ic-bg" data-lucide="dumbbell" style="width:60px;height:60px;"></i>
+          <h3>Physical Education</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Coach David Williams</div>
+          <div class="cls-row"><i data-lucide="users"></i> 40 students • Grade 8</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Tue, Thu • 1:00 PM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Sports Field A</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g6">NW</div><div class="avatar g2">MC</div>
+            <div class="avatar g5">RP</div><div class="more-count">+37</div>
+          </div>
+          <span class="pill info">Active</span>
+        </div>
+      </article>
+
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: linear-gradient(135deg,#0ea5e9,#22d3ee);">
+          <i class="ic-bg" data-lucide="cpu" style="width:60px;height:60px;"></i>
+          <h3>Computer Science</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Mr. Robert Nakamura</div>
+          <div class="cls-row"><i data-lucide="users"></i> 26 students • Grade 12</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Mon, Wed, Fri • 11:30 AM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Computer Lab</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g4">RP</div><div class="avatar g1">EL</div>
+            <div class="avatar g3">JK</div><div class="more-count">+23</div>
+          </div>
+          <span class="pill brand">In Session</span>
+        </div>
+      </article>
+
+      <article class="cls reveal">
+        <div class="cls-banner" style="background: linear-gradient(135deg,#ef4444,#f59e0b);">
+          <i class="ic-bg" data-lucide="globe" style="width:60px;height:60px;"></i>
+          <h3>World History</h3>
+        </div>
+        <div class="cls-body">
+          <div class="cls-row"><i data-lucide="user"></i> Ms. Julia Chen</div>
+          <div class="cls-row"><i data-lucide="users"></i> 24 students • Grade 10</div>
+          <div class="cls-row"><i data-lucide="clock"></i> Tue, Thu • 2:30 PM</div>
+          <div class="cls-row"><i data-lucide="map-pin"></i> Room 305</div>
+        </div>
+        <div class="cls-foot">
+          <div class="stack-avatars">
+            <div class="avatar g6">SO</div><div class="avatar g2">LB</div>
+            <div class="avatar g5">MC</div><div class="more-count">+21</div>
+          </div>
+          <span class="pill">Tomorrow</span>
+        </div>
+      </article>
+    </div>
+
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

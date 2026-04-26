@@ -100,11 +100,6 @@ export default function ClassesPage() {
     });
   };
 
-  const toggleAll = () => {
-    if (selected.size === classes.length) setSelected(new Set());
-    else setSelected(new Set(classes.map((c) => c._id)));
-  };
-
   const closeModal = () => { setModal("none"); setProfileClass(null); };
 
   return (
